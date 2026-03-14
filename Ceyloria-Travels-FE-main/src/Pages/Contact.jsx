@@ -176,7 +176,7 @@ export default function Contact() {
       <div className="relative h-[65vh] md:h-[75vh] w-full bg-black overflow-hidden flex items-center justify-center">
         <div className="absolute inset-0">
           <img
-            src="https://images.unsplash.com/photo-1578516120421-f439646409d0?q=80&w=2070&auto=format&fit=crop"
+            src="https://res.cloudinary.com/dicvgtusz/image/upload/v1773506700/view-hands-holding-smartphone_1_pw4cve.jpg"
             alt="Contact Ceyloria"
             className="w-full h-full object-cover scale-110 animate-subtle-zoom opacity-60"
           />
