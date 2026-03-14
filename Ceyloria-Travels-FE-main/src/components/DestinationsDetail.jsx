@@ -100,7 +100,7 @@ const DestinationsDetail = ({ selectedCategory, onBack }) => {
         <div className="max-w-7xl mx-auto space-y-32 md:space-y-48">
           {(safeParseJSON(selectedCategory.destinations) || []).map((dest, index) => (
             <div
-              key={dest.id}
+              key={dest.id || index}
               className={`flex flex-col lg:flex-row items-center gap-16 lg:gap-24 ${index % 2 !== 0 ? 'lg:flex-row-reverse' : ''}`}
             >
               {/* Image Side */}

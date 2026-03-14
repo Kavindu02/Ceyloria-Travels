@@ -83,7 +83,7 @@ export default function PlanMyTrip() {
         e.preventDefault();
         setSubmitting(true);
         try {
-            await axios.post(`${import.meta.env.VITE_BACKEND_URL}/plan-trip`, formData);
+            await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/plan-trip`, formData);
             setSubmitting(false);
             setSubmitted(true);
             window.scrollTo({ top: 0, behavior: "smooth" });

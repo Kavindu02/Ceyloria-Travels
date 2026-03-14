@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import toast from "react-hot-toast";
+import { Link } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   MapPin,
   Mail,
@@ -10,7 +12,8 @@ import {
   ChevronRight,
   Clock,
   Sparkles,
-  ArrowRight
+  ArrowRight,
+  CheckCircle
 } from 'lucide-react';
 
 // ---------------------- REUSABLE ANIMATION COMPONENT ----------------------
@@ -111,7 +114,7 @@ export default function Contact() {
     setSubmitStatus(null);
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/blogs/inquire`, {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/contact`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -120,15 +123,11 @@ export default function Contact() {
       });
 
       if (response.ok) {
-        toast.success("✅ Inquiry Sent Successfully!", {
+        toast.success("Inquiry Sent Successfully!", {
           duration: 4000,
           position: "top-center",
-          style: {
-            background: "#c8007b",
-            color: "#fff",
-            fontWeight: "600",
-            borderRadius: "0.75rem",
-          },
+          style: { background: "#c8007b", color: "#fff", fontWeight: "600", borderRadius: "100px", padding: '12px 24px' },
+          iconTheme: { primary: '#fff', secondary: '#c8007b' }
         });
 
         setSubmitStatus({
@@ -294,16 +293,36 @@ export default function Contact() {
                     </p>
                   </div>
 
-                  {submitStatus && (
-                    <div className={`mb-10 p-5 rounded-2xl border ${submitStatus.type === 'success'
-                        ? 'bg-green-50/50 border-green-100 text-green-800'
-                        : 'bg-red-50/50 border-red-100 text-red-800'
-                      } text-sm font-medium`}>
-                      {submitStatus.message}
+                  {submitStatus?.type === "success" ? (
+                    <div className="bg-transparent py-10 flex items-center justify-center min-h-[500px]">
+                      <motion.div 
+                        initial={{ opacity: 0, scale: 0.95 }} 
+                        animate={{ opacity: 1, scale: 1 }} 
+                        className="max-w-md w-full bg-white rounded-[40px] shadow-2xl shadow-gray-200/50 border border-gray-100 p-12 text-center"
+                      >
+                        <div className="w-24 h-24 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-10">
+                          <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-sm border border-green-100">
+                            <CheckCircle className="w-10 h-10 text-green-500" strokeWidth={1.5} />
+                          </div>
+                        </div>
+                        <h2 className={`${fontHead} text-4xl text-gray-900 mb-6 font-medium`}>Request Received!</h2>
+                        <p className="text-gray-500 mb-12 leading-relaxed text-lg font-light">
+                          Thank you for reaching out, <span className="font-semibold text-gray-800">{formData.name}</span>. Our travel experts are carefully reviewing your preferences and will craft the perfect itinerary for your requested journey. We'll be in touch with you shortly at <span className="font-medium text-[#c8007b]">{formData.email}</span>.
+                        </p>
+                        <Link to="/" className="inline-flex items-center justify-center w-full py-5 bg-[#1a1a1a] text-white font-bold rounded-full hover:bg-black transition-all duration-300 transform hover:scale-[1.02] shadow-xl shadow-gray-200">
+                          Return to Home
+                        </Link>
+                      </motion.div>
                     </div>
-                  )}
-
-                  <form className="space-y-12">
+                  ) : (
+                    <>
+                    {submitStatus?.type === 'error' && (
+                      <div className="mb-10 p-5 rounded-2xl border bg-red-50/50 border-red-100 text-red-800 text-sm font-medium">
+                        {submitStatus.message}
+                      </div>
+                    )}
+                    
+                    <form className="space-y-12" onSubmit={submitForm}>
                     {/* Phase 1: Identity */}
                     <div className="space-y-8">
                       <div className="flex items-center gap-3">
@@ -395,6 +414,8 @@ export default function Contact() {
                       </button>
                     </div>
                   </form>
+                  </>
+                  )}
                 </div>
               </Reveal>
             </div>

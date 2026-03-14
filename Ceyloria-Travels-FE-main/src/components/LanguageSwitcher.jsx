@@ -130,10 +130,13 @@ export default function LanguageSwitcher() {
 
         const clearCookies = () => {
             const expireStr = "expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            // Clear without domain (most common)
             document.cookie = `googtrans=; ${expireStr}`;
+            // Clear with explicit domain and subdomains
             document.cookie = `googtrans=; ${expireStr} domain=${host};`;
+            document.cookie = `googtrans=; ${expireStr} domain=.${host};`;
+            
             if (host !== 'localhost' && host !== '127.0.0.1') {
-                document.cookie = `googtrans=; ${expireStr} domain=.${host};`;
                 document.cookie = `googtrans=; ${expireStr} domain=${rootDomain};`;
                 document.cookie = `googtrans=; ${expireStr} domain=.${rootDomain};`;
             }
@@ -141,11 +144,10 @@ export default function LanguageSwitcher() {
 
         const setCookies = (langPath) => {
             const expireStr = "expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/;";
+            // Set without domain (standard)
             document.cookie = `googtrans=${langPath}; ${expireStr}`;
+            // Also set with domain to ensure it sticks on hosted environments
             document.cookie = `googtrans=${langPath}; ${expireStr} domain=${host};`;
-            if (host !== 'localhost' && host !== '127.0.0.1') {
-                document.cookie = `googtrans=${langPath}; ${expireStr} domain=.${host};`;
-            }
         };
 
         const select = document.querySelector('.goog-te-combo');
@@ -154,11 +156,16 @@ export default function LanguageSwitcher() {
             // Revert back to English
             clearCookies();
             
+            // Try to trigger the select if available
             if (select) {
                 select.value = 'en';
                 select.dispatchEvent(new Event('change'));
             }
-            window.location.reload();
+            
+            // Force reload to clear translation state
+            setTimeout(() => {
+                window.location.reload();
+            }, 150);
         } else {
             // Set translation to the selected language
             const langPath = `/en/${lang.code}`;
@@ -171,7 +178,7 @@ export default function LanguageSwitcher() {
 
             setTimeout(() => {
                 window.location.reload();
-            }, 100);
+            }, 150);
         }
     };
 
@@ -221,6 +228,7 @@ export default function LanguageSwitcher() {
                 <motion.button
                     whileHover={{ scale: 1.05, y: -2 }}
                     whileTap={{ scale: 0.95 }}
+                    layout
                     onClick={() => setIsOpen(!isOpen)}
                     className="relative flex items-center gap-2.5 bg-white/90 backdrop-blur-md border border-gray-200 p-2 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.16)] transition-all duration-500 group border-2 border-white"
                 >

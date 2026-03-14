@@ -5,6 +5,7 @@ export default function CeyloriaLoader() {
     <motion.div 
       initial={{ opacity: 1 }}
       exit={{ opacity: 0 }}
+      layout
       transition={{ duration: 0.8, ease: "easeInOut" }}
       className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#faf9f6]"
     >

@@ -94,7 +94,7 @@ const TravelCard = ({
   }, [currentIdx, image]);
 
   return (
-    <div className="group relative bg-white rounded-[2rem] overflow-hidden shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border border-gray-100 flex flex-col h-full">
+    <div className="group relative bg-white rounded-[2rem] overflow-hidden shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border border-gray-100 flex flex-col h-[520px] w-full">
       
       {/* --- Image Container --- */}
       <div className="relative h-72 overflow-hidden bg-gray-100">
@@ -170,7 +170,7 @@ const TravelCard = ({
         </div>
 
         {/* Description */}
-        <p className="text-gray-500 text-sm leading-relaxed mb-8 line-clamp-2">
+        <p className="text-gray-500 text-sm leading-relaxed mb-8 line-clamp-3 min-h-[60px]">
           {description}
         </p>
 

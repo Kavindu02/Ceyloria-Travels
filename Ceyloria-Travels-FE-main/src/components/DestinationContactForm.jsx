@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import toast from "react-hot-toast";
-import { Mail, Phone, Users, Globe, ChevronRight, Plus, X } from 'lucide-react';
+import { Link } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+import { Mail, Phone, Users, Globe, ChevronUp, Plus, X, MapPin, ChevronRight, Loader2, CheckCircle } from 'lucide-react';
 
 // ---------------------- REUSABLE ANIMATION COMPONENT ----------------------
 const Reveal = ({ children, className = "", delay = 0, direction = "up" }) => {
@@ -131,7 +133,7 @@ export default function DestinationContactForm({ availableDestinations }) {
     const payload = { ...formData, message: finalMessage };
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/blogs/inquire`, {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/contact`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -140,10 +142,11 @@ export default function DestinationContactForm({ availableDestinations }) {
       });
 
       if (response.ok) {
-        toast.success("✅ Inquiry Sent Successfully!", {
+        toast.success("Inquiry Sent Successfully!", {
           duration: 4000,
           position: "top-center",
-          style: { background: "#c8007b", color: "#fff", fontWeight: "600", borderRadius: "0.75rem" }
+          style: { background: "#c8007b", color: "#fff", fontWeight: "600", borderRadius: "100px", padding: '12px 24px' },
+          iconTheme: { primary: '#fff', secondary: '#c8007b' }
         });
 
         setSubmitStatus({
@@ -174,6 +177,31 @@ export default function DestinationContactForm({ availableDestinations }) {
     }
   };
 
+  if (submitStatus?.type === "success") {
+    return (
+      <div className="bg-transparent py-20 flex items-center justify-center min-h-[500px]">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }} 
+          animate={{ opacity: 1, scale: 1 }} 
+          className="max-w-md w-full bg-white rounded-[40px] shadow-2xl shadow-gray-200/50 border border-gray-100 p-12 text-center"
+        >
+          <div className="w-24 h-24 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-10">
+            <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-sm border border-green-100">
+              <CheckCircle className="w-10 h-10 text-green-500" strokeWidth={1.5} />
+            </div>
+          </div>
+          <h2 className={`${fontHead} text-4xl text-gray-900 mb-6 font-medium`}>Request Received!</h2>
+          <p className="text-gray-500 mb-12 leading-relaxed text-lg font-light">
+            Thank you for reaching out, <span className="font-semibold text-gray-800">{formData.name}</span>. Our travel experts are carefully reviewing your preferences and will craft the perfect itinerary for your requested destinations. We'll be in touch with you shortly at <span className="font-medium text-[#c8007b]">{formData.email}</span>.
+          </p>
+          <Link to="/" className="inline-flex items-center justify-center w-full py-5 bg-[#1a1a1a] text-white font-bold rounded-full hover:bg-black transition-all duration-300 transform hover:scale-[1.02] shadow-xl shadow-gray-200">
+            Return to Home
+          </Link>
+        </motion.div>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-[#faf9f6] rounded-[40px] p-8 md:p-14 shadow-lg border border-gray-100 relative mt-24 max-w-5xl mx-auto overflow-hidden">
       <Reveal direction="up">
@@ -189,11 +217,8 @@ export default function DestinationContactForm({ availableDestinations }) {
           </p>
         </div>
 
-        {submitStatus && (
-          <div className={`mb-10 p-5 rounded-2xl border ${submitStatus.type === 'success'
-              ? 'bg-green-50/50 border-green-100 text-green-800'
-              : 'bg-red-50/50 border-red-100 text-red-800'
-            } text-sm font-medium`}>
+        {submitStatus?.type === 'error' && (
+          <div className="mb-10 p-5 rounded-2xl border bg-red-50/50 border-red-100 text-red-800 text-sm font-medium">
             {submitStatus.message}
           </div>
         )}
@@ -230,34 +255,44 @@ export default function DestinationContactForm({ availableDestinations }) {
               </button>
             </div>
             
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-6">
               {selectedDestinations.map((dest, index) => (
-                <div key={index} className="flex items-center gap-3 group relative">
-                    <div className="relative overflow-hidden rounded-[20px] border border-gray-200 bg-white shadow-sm transition-all duration-300 focus-within:border-[#c8007b]/30 w-full flex-1">
+                <div key={index} className="flex flex-col md:flex-row items-start md:items-center gap-4 group relative">
+                    <div className="relative w-full flex-1 group/select flex items-center bg-white border-2 border-gray-100 rounded-3xl transition-all duration-500 hover:border-[#c8007b]/20 focus-within:border-[#c8007b] focus-within:ring-4 focus-within:ring-[#c8007b]/5 shadow-sm overflow-hidden">
+                      <div className="pl-6 text-gray-400 group-focus-within/select:text-[#c8007b] transition-colors">
+                        <MapPin size={20} className="shrink-0" />
+                      </div>
                       <select 
-                        className="w-full bg-transparent px-5 py-4 text-gray-900 outline-none appearance-none font-medium text-sm cursor-pointer"
+                        className="w-full bg-transparent px-4 py-5 md:py-6 text-gray-900 outline-none appearance-none font-bold text-sm md:text-base cursor-pointer z-10 hover:text-[#c8007b] transition-colors duration-300"
                         value={dest}
                         onChange={(e) => handleDestinationChange(index, e.target.value)}
                       >
-                        <option value="" disabled>-- Select a Destination --</option>
-                        {availableDestinations?.map(opt => (
-                           typeof opt === 'string' ? 
-                            <option key={opt} value={opt}>{opt}</option> :
-                            <option key={opt.id} value={opt.title}>{opt.title}</option>
+                        <option value="" disabled className="text-gray-400 font-medium bg-white">Select destination spot</option>
+                        {availableDestinations?.map((opt, optIndex) => (
+                          <option 
+                            key={typeof opt === 'string' ? `${opt}-${optIndex}` : opt.id || optIndex} 
+                            value={typeof opt === 'string' ? opt : opt.title}
+                            className="py-4 px-6 text-gray-800 font-bold bg-white"
+                          >
+                            {typeof opt === 'string' ? opt : opt.title}
+                          </option>
                         ))}
                       </select>
-                      <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
-                        <ChevronRight size={16} className="rotate-90" />
+                      <div className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-gray-300 group-hover/select:text-[#c8007b]/50 group-focus-within/select:text-[#c8007b] transition-all duration-300 transform group-focus-within/select:rotate-180">
+                        <ChevronUp size={20} className="rotate-180" />
                       </div>
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => removeDestinationSlot(index)}
-                      className="p-3 text-red-400 hover:bg-red-50 hover:text-red-600 rounded-full transition-colors flex-shrink-0"
-                      title="Remove Spot"
-                    >
-                      <X size={18} />
-                    </button>
+                    
+                    {selectedDestinations.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => removeDestinationSlot(index)}
+                        className="p-4 md:p-5 text-gray-400 hover:bg-red-50 hover:text-red-500 rounded-2xl transition-all duration-300 flex-shrink-0 border-2 border-transparent hover:border-red-100 active:scale-95 group/remove"
+                        title="Remove this spot"
+                      >
+                        <X size={20} className="group-hover/remove:rotate-90 transition-transform duration-300" />
+                      </button>
+                    )}
                 </div>
               ))}
             </div>

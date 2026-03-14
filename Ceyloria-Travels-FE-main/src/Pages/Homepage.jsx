@@ -174,26 +174,26 @@ export default function HomePage() {
     return () => { cancelled = true; };
   }, []);
 
-  // Performance Enhancement: Pause the looping video when out of view
   useEffect(() => {
     let observer;
-    if (videoRef.current) {
+    const currentVideo = videoRef.current;
+    if (currentVideo) {
       observer = new IntersectionObserver(
         (entries) => {
           entries.forEach(entry => {
             if (entry.isIntersecting) {
-              videoRef.current.play().catch(e => console.log('Video auto-play blocked', e));
+              currentVideo.play().catch(e => {});
             } else {
-              videoRef.current.pause();
+              if (currentVideo) currentVideo.pause();
             }
           });
         },
         { threshold: 0.01 }
       );
-      observer.observe(videoRef.current);
+      observer.observe(currentVideo);
     }
     return () => {
-      if (observer && videoRef.current) observer.unobserve(videoRef.current);
+      if (observer && currentVideo) observer.unobserve(currentVideo);
     };
   }, []);
 

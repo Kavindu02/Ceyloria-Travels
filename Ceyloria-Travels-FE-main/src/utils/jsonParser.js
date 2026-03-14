@@ -15,11 +15,16 @@ export const safeParseJSON = (data, fallback = []) => {
   // If it's already an object/array, return it
   if (typeof data !== 'string') return data;
   
+  // If it's a URL or a non-JSON string, return it wrapped in an array or as-is
+  if (data.trim().startsWith('http') || !data.trim().startsWith('[') && !data.trim().startsWith('{')) {
+    return [data];
+  }
+  
   try {
     const parsed = JSON.parse(data);
     return parsed;
   } catch (err) {
-    console.error("Failed to parse JSON:", data, err);
+    // Silently return fallback for non-JSON strings to avoid console clutter
     return fallback;
   }
 };
