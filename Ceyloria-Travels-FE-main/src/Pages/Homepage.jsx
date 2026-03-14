@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import { MapPin, ArrowRight, Compass } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import Gallery from "../components/Gallery";
 import CuratedPackageCard from "../components/CuratedPackageCard";
+import CeyloriaLoader from "../components/loader";
 
 // Module-level fetch cache — survives component remounts, fetches only once
 const _cache = { latest: null, curated: null, latestPromise: null, curatedPromise: null };
@@ -98,6 +99,15 @@ export default function HomePage() {
   const [activeCategory, setActiveCategory] = useState(null);
   const [journeyCurrent, setJourneyCurrent] = useState(0);
   const [latestPackages, setLatestPackages] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Artificial delay to show the beautiful loader
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 2800);
+    return () => clearTimeout(timer);
+  }, []);
   const [curatedPackages, setCuratedPackages] = useState([]);
 
   // Router Navigation
@@ -189,6 +199,9 @@ export default function HomePage() {
 
   return (
     <div className={`bg-white text-gray-900 ${fontBody} selection:bg-blue-600 selection:text-white`}>
+      <AnimatePresence>
+        {isLoading && <CeyloriaLoader key="main-loader" />}
+      </AnimatePresence>
 
       {/* ---------------------- 1. HERO SECTION ---------------------- */}
       <div className="relative w-full h-screen overflow-hidden bg-black">

@@ -46,14 +46,6 @@ const Destinations = () => {
         window.scrollTo(0, 0);
     }, [category]);
 
-    if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-[#faf9f6]">
-                <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-600"></div>
-            </div>
-        );
-    }
-
     if (error) {
          return (
             <div className="min-h-screen flex items-center justify-center bg-[#faf9f6]">

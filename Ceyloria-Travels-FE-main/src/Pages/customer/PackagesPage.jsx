@@ -5,6 +5,9 @@ import {
   Filter,
   X,
   Calendar,
+  Clock,
+  Plus,
+  Minus,
   SlidersHorizontal,
   MapPin,
   DollarSign,
@@ -72,6 +75,8 @@ const PackagesPage = () => {
   const [selectedDestination, setSelectedDestination] = useState('All');
   const [selectedDate, setSelectedDate] = useState('');
   const [priceRange, setPriceRange] = useState(5000);
+  const [selectedDays, setSelectedDays] = useState('All');
+  const [selectedNights, setSelectedNights] = useState('All');
 
   const [maxPriceLimit, setMaxPriceLimit] = useState(5000);
   const [availableLocations, setAvailableLocations] = useState([]);
@@ -123,15 +128,28 @@ const PackagesPage = () => {
       const matchesDate =
         !selectedDate || new Date(pkg.startDate) >= new Date(selectedDate);
 
-      return matchesSearch && matchesDestination && matchesPrice && matchesDate;
+      // Duration Filter (e.g., "7 Days / 6 Nights" or "3 Days")
+      const durationStr = (pkg.duration || "").toLowerCase();
+      
+      const matchesDays = selectedDays === 'All' || 
+        durationStr.includes(`${selectedDays} day`) || 
+        durationStr.includes(`${selectedDays}day`);
+        
+      const matchesNights = selectedNights === 'All' || 
+        durationStr.includes(`${selectedNights} night`) || 
+        durationStr.includes(`${selectedNights}night`);
+
+      return matchesSearch && matchesDestination && matchesPrice && matchesDate && matchesDays && matchesNights;
     });
-  }, [packages, searchTerm, selectedDestination, priceRange, selectedDate]);
+  }, [packages, searchTerm, selectedDestination, priceRange, selectedDate, selectedDays, selectedNights]);
 
   const clearFilters = () => {
     setSearchTerm('');
     setSelectedDestination('All');
     setSelectedDate('');
     setPriceRange(maxPriceLimit);
+    setSelectedDays('All');
+    setSelectedNights('All');
   };
 
   return (
@@ -211,6 +229,50 @@ const PackagesPage = () => {
                         <option value="All">All Regions</option>
                         {availableLocations.map(loc => <option key={loc}>{loc}</option>)}
                       </select>
+                    </div>
+                  </div>
+
+                  {/* Days Filter */}
+                  <div className="space-y-4">
+                    <p className="text-[10px] font-bold tracking-widest text-[#c8007b] uppercase">Days</p>
+                    <div className="flex items-center justify-between bg-neutral-50 border border-neutral-100 rounded-[20px] px-4 py-3">
+                      <button
+                        onClick={() => setSelectedDays(prev => prev === 'All' ? 'All' : (prev > 1 ? prev - 1 : 'All'))}
+                        className="p-2 hover:bg-white rounded-full transition-colors text-neutral-400 hover:text-[#c8007b]"
+                      >
+                        <Minus size={18} />
+                      </button>
+                      <span className="font-bold text-sm text-gray-900">
+                        {selectedDays === 'All' ? 'All Days' : `${selectedDays} Day${selectedDays > 1 ? 's' : ''}`}
+                      </span>
+                      <button
+                        onClick={() => setSelectedDays(prev => prev === 'All' ? 1 : prev + 1)}
+                        className="p-2 hover:bg-white rounded-full transition-colors text-neutral-400 hover:text-[#c8007b]"
+                      >
+                        <Plus size={18} />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Nights Filter */}
+                  <div className="space-y-4">
+                    <p className="text-[10px] font-bold tracking-widest text-[#c8007b] uppercase">Nights</p>
+                    <div className="flex items-center justify-between bg-neutral-50 border border-neutral-100 rounded-[20px] px-4 py-3">
+                      <button
+                        onClick={() => setSelectedNights(prev => prev === 'All' ? 'All' : (prev > 1 ? prev - 1 : 'All'))}
+                        className="p-2 hover:bg-white rounded-full transition-colors text-neutral-400 hover:text-[#c8007b]"
+                      >
+                        <Minus size={18} />
+                      </button>
+                      <span className="font-bold text-sm text-gray-900">
+                        {selectedNights === 'All' ? 'All Nights' : `${selectedNights} Night${selectedNights > 1 ? 's' : ''}`}
+                      </span>
+                      <button
+                        onClick={() => setSelectedNights(prev => prev === 'All' ? 1 : prev + 1)}
+                        className="p-2 hover:bg-white rounded-full transition-colors text-neutral-400 hover:text-[#c8007b]"
+                      >
+                        <Plus size={18} />
+                      </button>
                     </div>
                   </div>
 
