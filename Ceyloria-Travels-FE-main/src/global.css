@@ -1,0 +1,54 @@
+/* 🌎 Global Styles */
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #f8f9fa;
+}
+
+/* 🎯 Map container positioning */
+#map {
+    width: 100%;
+    height: 100vh;
+}
+
+/* 📍 Animated marker pulse ring */
+.marker-pulse-ring {
+    width: 22px;
+    height: 22px;
+    background: rgba(0, 123, 255, 0.4);
+    border: 2px solid #0d6efd;
+    border-radius: 50%;
+    position: absolute;
+    animation: pulse 1.5s infinite;
+    transform: translate(-50%, -50%);
+}
+
+/* 🔵 Map marker bubble */
+.marker-wave {
+    width: 14px;
+    height: 14px;
+    background: #0d6efd;
+    border-radius: 50%;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 12px rgba(13, 110, 253, 0.8);
+}
+
+/* ✨ Pulse animation */
+@keyframes pulse {
+    0% {
+        transform: translate(-50%, -50%) scale(0.8);
+        opacity: 0.85;
+    }
+
+    70% {
+        transform: translate(-50%, -50%) scale(1.3);
+        opacity: 0.2;
+    }
+
+    100% {
+        transform: translate(-50%, -50%) scale(0.8);
+        opacity: 0.85;
+    }
+}

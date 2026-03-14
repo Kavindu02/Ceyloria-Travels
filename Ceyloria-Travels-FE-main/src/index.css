@@ -1,0 +1,400 @@
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap");
+
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+@layer base {
+  :root {
+    --color-bg-warm: #fdfcfb;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-bg-warm);
+    color: #111827;
+    /* Tailwind gray-900 */
+  }
+}
+
+@layer utilities {
+}
+
+/* Floating animation for badges */
+@keyframes floating {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-floating {
+  animation: floating 3s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* ---- Homepage animations (moved from inline JSX style block) ---- */
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-up {
+  animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+}
+
+@keyframes fadeUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeUp 0.8s ease-out forwards;
+}
+
+@keyframes scaleIn {
+  from {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0;
+  }
+
+  to {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 8s linear infinite;
+}
+
+@keyframes progressFill {
+  from {
+    transform: scaleX(0);
+  }
+
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.animate-progress-fill {
+  animation: progressFill 6s linear forwards;
+  transform-origin: left;
+}
+
+/* ---- Page animations (moved from per-page inline style blocks) ---- */
+
+/* About, Activities, gallerysection pages: hero zoom */
+@keyframes subtle-zoom {
+  0% {
+    transform: scale(1);
+  }
+
+  100% {
+    transform: scale(1.1);
+  }
+}
+
+.animate-subtle-zoom {
+  animation: subtle-zoom 20s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+/* gallerysection pages: slow pan on hero image */
+@keyframes slow-pan {
+  0% {
+    transform: scale(1.05) translateX(0);
+  }
+
+  50% {
+    transform: scale(1.05) translateX(-2%);
+  }
+
+  100% {
+    transform: scale(1.05) translateX(0);
+  }
+}
+
+.animate-slow-pan {
+  animation: slow-pan 20s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* gallerysection pages: slide up on load */
+@keyframes slide-up {
+  from {
+    transform: translateY(60px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-up-page {
+  animation: slide-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Packages / Accommodations pages */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.animate-shimmer {
+  background: linear-gradient(to right, #f0f0f0 4%, #e0e0e0 25%, #f0f0f0 36%);
+  background-size: 1000px 100%;
+  animation: shimmer 2s infinite linear;
+}
+
+/* blog / contact pages: gradient rotate */
+@keyframes gradient-rotate {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-gradient-rotate {
+  background-size: 200% 200%;
+  animation: gradient-rotate 4s ease infinite;
+}
+
+/* Ensure all transform-only animations are GPU-composited */
+.animate-subtle-zoom,
+.animate-slow-pan,
+.animate-floating {
+  backface-visibility: hidden;
+}
+
+/* ---- Gallery page blog-content typography (moved from inline style blocks) ---- */
+.blog-content h2,
+.blog-content h3,
+.blog-content h4 {
+  font-family: "Playfair Display", serif;
+  color: #1c1917;
+  margin-top: 2.5rem;
+  margin-bottom: 1.5rem;
+  line-height: 1.3;
+}
+
+.blog-content h2 {
+  font-size: 2.5rem;
+}
+
+.blog-content h3 {
+  font-size: 2rem;
+}
+
+.blog-content p {
+  margin-bottom: 1.75rem;
+  font-size: 1.125rem;
+}
+
+.blog-content img {
+  border-radius: 1.5rem;
+  margin: 2rem 0;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
+}
+
+.blog-content blockquote {
+  border-left: 2px solid #ca8a04;
+  padding-left: 1.5rem;
+  font-style: italic;
+  font-family: "Playfair Display", serif;
+  font-size: 1.5rem;
+  color: #44403c;
+  margin: 2.5rem 0;
+  background: linear-gradient(to right, #fef08a, transparent);
+  padding: 1.5rem;
+  border-radius: 0 1rem 1rem 0;
+}
+
+.blog-content ul,
+.blog-content ol {
+  margin-bottom: 1.75rem;
+  padding-left: 1.5rem;
+}
+
+.blog-content li {
+  margin-bottom: 0.5rem;
+}
+
+.blog-content strong {
+  color: #292524;
+  font-weight: 600;
+}
+
+/* ---- blogDetail quill-content styles (moved from inline style block) ---- */
+.quill-content .ql-align-center {
+  text-align: center;
+}
+
+.quill-content .ql-align-right {
+  text-align: right;
+}
+
+.quill-content .ql-align-justify {
+  text-align: justify;
+}
+
+.quill-content .ql-size-small {
+  font-size: 0.75em;
+}
+
+.quill-content .ql-size-large {
+  font-size: 1.5em;
+}
+
+.quill-content .ql-size-huge {
+  font-size: 2.5em;
+}
+
+.quill-content blockquote {
+  border-left: 4px solid #f59e0b;
+  padding-left: 1rem;
+  margin-left: 0;
+  margin-right: 0;
+  font-style: italic;
+  color: #4b5563;
+}
+
+.quill-content ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+}
+
+.quill-content ol {
+  list-style-type: decimal;
+  padding-left: 1.5rem;
+}
+
+/* blogDetail has extended blog-content overrides */
+.blog-content h1 {
+  font-family: "Playfair Display", serif;
+  color: #1c1917;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  line-height: 1.3;
+  font-size: 3rem;
+}
+
+.blog-content {
+  word-break: break-word;
+  overflow-wrap: break-word;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.blog-content p {
+  word-break: break-word;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+  max-width: 100%;
+}
+
+.blog-content img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.blog-content em {
+  font-style: italic;
+}
+
+.blog-content u {
+  text-decoration: underline;
+}
+
+.blog-content s {
+  text-decoration: line-through;
+}
+
+/* ---- Utility classes (moved from accommodationsOverviewPage inline style) ---- */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.shadow-3xl {
+  box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.08);
+}
+
+/* ---- ActivityDetail class aliases (stripped from inline style block) ---- */
+/* fade-in-up: same motion as slideUp, just different class name */
+.animate-fade-in-up {
+  animation: slideUp 1s ease-out forwards;
+}
+
+/* animate-fade-in: simple opacity fade */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.5s ease-out forwards;
+}

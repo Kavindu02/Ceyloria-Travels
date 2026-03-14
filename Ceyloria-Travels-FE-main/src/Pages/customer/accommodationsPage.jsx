@@ -1,0 +1,318 @@
+import React, { useState, useEffect, useMemo, useRef } from 'react';
+import AccommodationCard from '../../components/AccommodationsCard';
+import {
+  Search,
+  Filter,
+  X,
+  MapPin,
+  SlidersHorizontal,
+  Home,
+  Star
+} from 'lucide-react';
+import { safeParseJSON } from '../../utils/jsonParser.js';
+
+// ---------------------- REUSABLE ANIMATION COMPONENT ----------------------
+const Reveal = ({ children, className = "", delay = 0, direction = "up" }) => {
+  const [isVisible, setVisible] = useState(false);
+  const domRef = useRef();
+
+  useEffect(() => {
+    let observer;
+    const currentElement = domRef.current;
+
+    if (currentElement) {
+      observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            setVisible(true);
+            observer.disconnect();
+          }
+        },
+        { threshold: 0.1, rootMargin: "50px" }
+      );
+
+      observer.observe(currentElement);
+    }
+
+    return () => {
+      if (observer) observer.disconnect();
+    };
+  }, []);
+
+  const getTransform = () => {
+    if (!isVisible) {
+      if (direction === "up") return "translate-y-10 opacity-0";
+      if (direction === "left") return "-translate-x-10 opacity-0";
+      if (direction === "right") return "translate-x-10 opacity-0";
+    }
+    return "translate-y-0 translate-x-0 opacity-100";
+  };
+
+  return (
+    <div
+      ref={domRef}
+      style={{ transitionDelay: `${delay}ms` }}
+      className={`transition-all duration-1000 ease-out transform ${getTransform()} ${className}`}
+    >
+      {children}
+    </div>
+  );
+};
+
+const AccommodationsPage = () => {
+  const [accommodations, setAccommodations] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
+  const fontHead = "font-['Playfair_Display',_serif]";
+
+  // Filter States
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedLocation, setSelectedLocation] = useState('All');
+  const [selectedType, setSelectedType] = useState('All');
+  const [priceRange, setPriceRange] = useState(5000);
+
+  // Derived Data States
+  const [maxPriceLimit, setMaxPriceLimit] = useState(5000);
+  const [availableLocations, setAvailableLocations] = useState([]);
+  const [accommodationTypes, setAccommodationTypes] = useState([]);
+
+  useEffect(() => {
+    const fetchAccommodations = async () => {
+      try {
+        const res = await fetch(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000'}/accommodations`);
+        if (!res.ok) throw new Error('Failed to load accommodations');
+        const data = await res.json();
+
+        setAccommodations(data);
+
+        const locations = new Set();
+        const types = new Set();
+        let highestPrice = 0;
+
+        data.forEach(acc => {
+          if (acc.location) locations.add(acc.location);
+          if (acc.type) types.add(acc.type);
+
+          const parsedPackages = safeParseJSON(acc.packages) || [];
+          if (parsedPackages.length > 0) {
+            const minPackagePrice = Math.min(...parsedPackages.map(p => p.pricePerNight));
+            if (minPackagePrice > highestPrice) highestPrice = minPackagePrice;
+          }
+        });
+
+        setAvailableLocations([...locations]);
+        setAccommodationTypes([...types]);
+
+        const safeMax = highestPrice > 0 ? highestPrice + 500 : 1000;
+        setMaxPriceLimit(safeMax);
+        setPriceRange(safeMax);
+
+        setLoading(false);
+      } catch (err) {
+        setError(err.message || 'Something went wrong');
+        setLoading(false);
+      }
+    };
+    fetchAccommodations();
+    window.scrollTo(0, 0);
+  }, []);
+
+  const filteredAccommodations = useMemo(() => {
+    return accommodations.filter(acc => {
+      const matchesSearch =
+        acc.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        acc.description?.toLowerCase().includes(searchTerm.toLowerCase());
+
+      const matchesLocation =
+        selectedLocation === 'All' ||
+        acc.location === selectedLocation;
+
+      const matchesType =
+        selectedType === 'All' ||
+        acc.type === selectedType;
+
+      const parsedPackages = safeParseJSON(acc.packages) || [];
+      let matchesPrice = false;
+      if (parsedPackages.length > 0) {
+        const lowestPrice = Math.min(...parsedPackages.map(p => p.pricePerNight));
+        matchesPrice = lowestPrice <= priceRange;
+      } else {
+        matchesPrice = true;
+      }
+
+      return matchesSearch && matchesLocation && matchesType && matchesPrice;
+    });
+  }, [accommodations, searchTerm, selectedLocation, selectedType, priceRange]);
+
+  const clearFilters = () => {
+    setSearchTerm('');
+    setSelectedLocation('All');
+    setSelectedType('All');
+    setPriceRange(maxPriceLimit);
+  };
+
+  return (
+    <div className="bg-[#faf9f6] selection:bg-[#c8007b] selection:text-white min-h-screen pb-20 overflow-x-hidden">
+
+      {/* --- HERO SECTION --- */}
+      <div className="relative h-[60vh] lg:h-[70vh] w-full bg-black overflow-hidden flex items-center justify-center">
+        <div className="absolute inset-0">
+          <img
+            src="https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=2070&auto=format&fit=crop"
+            alt="Luxury Stay"
+            className="w-full h-full object-cover animate-subtle-zoom opacity-60"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent z-10" />
+        </div>
+
+        <div className="relative z-20 container mx-auto px-6 text-center">
+          <Reveal direction="up">
+            <span className="text-cyan-400 font-bold tracking-[0.4em] uppercase text-xs block mb-6">Premium Stays</span>
+            <h1 className={`${fontHead} text-5xl md:text-7xl lg:text-8xl text-white leading-tight mb-8 drop-shadow-2xl`}>
+              Refined <span className="italic text-cyan-200">Escapes</span>
+            </h1>
+            <p className="text-lg md:text-xl text-neutral-300 max-w-2xl mx-auto font-light leading-relaxed">
+              Discover the finest accommodations across Sri Lanka, from colonial heritage villas to contemporary beach resorts.
+            </p>
+          </Reveal>
+        </div>
+      </div>
+
+      {/* --- MAIN CONTENT --- */}
+      <section className="relative py-24 px-6 md:px-12 lg:px-24">
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#c8007b]/5 rounded-full blur-[100px] -z-10" />
+
+        <div className="max-w-7xl mx-auto">
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24 items-start">
+
+            {/* --- FILTER SIDEBAR --- */}
+            <aside className={`lg:col-span-3 fixed lg:static inset-0 bg-white lg:bg-transparent z-50 lg:z-auto transition-transform duration-500 ease-in-out overflow-y-auto lg:overflow-visible ${showMobileFilters ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
+              <div className="h-full p-8 lg:p-0 lg:sticky lg:top-32">
+
+                <div className="lg:hidden flex justify-between items-center mb-12">
+                  <h3 className={`${fontHead} text-2xl`}>Refine Search</h3>
+                  <button onClick={() => setShowMobileFilters(false)} className="p-3 bg-neutral-50 rounded-full text-neutral-400">
+                    <X size={24} />
+                  </button>
+                </div>
+
+                <Reveal direction="up" className="space-y-12">
+                  {/* Search Group */}
+                  <div className="space-y-4">
+                    <p className="text-[10px] font-bold tracking-widest text-[#c8007b] uppercase">Keywords</p>
+                    <div className="relative group/input">
+                      <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-300 group-focus-within/input:text-[#c8007b] transition-colors" />
+                      <input
+                        type="text"
+                        placeholder="Resort name..."
+                        value={searchTerm}
+                        onChange={e => setSearchTerm(e.target.value)}
+                        className="w-full bg-neutral-50 border border-neutral-100 rounded-[20px] pl-12 pr-4 py-4 outline-none focus:bg-white focus:border-[#c8007b]/20 transition-all font-medium text-sm"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Location Group */}
+                  <div className="space-y-4">
+                    <p className="text-[10px] font-bold tracking-widest text-[#c8007b] uppercase">Location</p>
+                    <div className="relative group/input">
+                      <MapPin size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-300 group-focus-within/input:text-[#c8007b] transition-colors" />
+                      <select
+                        className="w-full appearance-none bg-neutral-50 border border-neutral-100 rounded-[20px] pl-12 pr-4 py-4 outline-none focus:bg-white focus:border-[#c8007b]/20 transition-all font-medium text-sm cursor-pointer"
+                        value={selectedLocation}
+                        onChange={e => setSelectedLocation(e.target.value)}
+                      >
+                        <option value="All">All Locations</option>
+                        {availableLocations.map(loc => <option key={loc} value={loc}>{loc}</option>)}
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Type Group */}
+                  <div className="space-y-4">
+                    <p className="text-[10px] font-bold tracking-widest text-[#c8007b] uppercase">Property Type</p>
+                    <div className="relative group/input">
+                      <Home size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-300 group-focus-within/input:text-[#c8007b] transition-colors" />
+                      <select
+                        className="w-full appearance-none bg-neutral-50 border border-neutral-100 rounded-[20px] pl-12 pr-4 py-4 outline-none focus:bg-white focus:border-[#c8007b]/20 transition-all font-medium text-sm cursor-pointer"
+                        value={selectedType}
+                        onChange={e => setSelectedType(e.target.value)}
+                      >
+                        <option value="All">All Types</option>
+                        {accommodationTypes.map(type => <option key={type} value={type}>{type}</option>)}
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Price Group */}
+                  <div className="space-y-6">
+                    <div className="flex justify-between items-end">
+                      <p className="text-[10px] font-bold tracking-widest text-[#c8007b] uppercase">Max Price/Night</p>
+                      <span className="text-xl font-black text-gray-900">${priceRange}</span>
+                    </div>
+                    <input
+                      type="range"
+                      min="0"
+                      max={maxPriceLimit}
+                      value={priceRange}
+                      onChange={e => setPriceRange(+e.target.value)}
+                      className="w-full h-1.5 bg-neutral-100 rounded-lg appearance-none cursor-pointer accent-[#c8007b]"
+                    />
+                  </div>
+
+                  <button onClick={clearFilters} className="text-[10px] font-bold text-neutral-400 hover:text-[#c8007b] uppercase tracking-widest transition-colors flex items-center gap-2">
+                    <X size={14} /> Reset Filters
+                  </button>
+                </Reveal>
+              </div>
+            </aside>
+
+            {/* --- RESULTS GRID --- */}
+            <main className="lg:col-span-9">
+              <div className="lg:hidden mb-12">
+                <button onClick={() => setShowMobileFilters(true)} className="w-full flex items-center justify-between p-6 bg-neutral-900 text-white rounded-[30px] font-bold uppercase tracking-widest text-xs">
+                  <span>Refine Stays</span>
+                  <SlidersHorizontal size={18} />
+                </button>
+              </div>
+
+              {loading ? (
+                <div className="py-20 text-center">
+                  <div className="w-16 h-16 border-4 border-neutral-100 border-t-[#c8007b] rounded-full animate-spin mx-auto mb-6"></div>
+                  <p className="font-bold text-neutral-400 uppercase tracking-widest text-[10px]">Scanning Properties...</p>
+                </div>
+              ) : error ? (
+                <div className="py-20 text-center">
+                  <p className="text-red-500 font-bold text-xl">{error}</p>
+                </div>
+              ) : filteredAccommodations.length === 0 ? (
+                <div className="py-20 text-center space-y-6">
+                  <div className="w-20 h-20 bg-neutral-50 rounded-full flex items-center justify-center mx-auto text-neutral-300">
+                    <Search size={32} />
+                  </div>
+                  <h3 className={`${fontHead} text-3xl text-gray-900`}>No properties found.</h3>
+                  <p className="text-neutral-400">Try adjusting your filters to find your ideal stay.</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-14">
+                  {filteredAccommodations.map((acc, i) => (
+                    <Reveal key={acc.id} delay={i % 2 * 100} direction="up">
+                      <AccommodationCard accommodation={acc} />
+                    </Reveal>
+                  ))}
+                </div>
+              )}
+            </main>
+          </div>
+        </div>
+      </section>
+
+
+
+    </div>
+  );
+};
+
+export default AccommodationsPage;
