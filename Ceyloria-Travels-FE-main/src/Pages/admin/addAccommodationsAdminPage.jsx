@@ -82,94 +82,105 @@ export default function AddAccommodationAdminPage() {
   };
 
   return (
-    <div className="p-10 text-white">
-      <h1 className="text-2xl font-bold mb-4">Add New Accommodation</h1>
-      <form onSubmit={handleSubmit} className="space-y-4">
+    <div className="max-w-4xl mx-auto p-6">
+      <div className="bg-slate-900/50 border border-white/10 rounded-2xl p-8 space-y-6">
+        <div>
+          <h1 className="text-3xl font-bold text-white">Add New Accommodation</h1>
+          <p className="text-slate-400 mt-1">Create and publish a new hotel listing</p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-6">
 
         {/* Name */}
-        <div>
-          <label>Name</label>
+        <div className="space-y-2">
+          <label className="text-sm font-semibold text-slate-300">Name</label>
           <input
             type="text"
             value={acc.name}
             onChange={(e) => handleChange("name", e.target.value)}
-            className="px-3 py-2 rounded text-black w-full"
+            className="w-full h-12 rounded-xl bg-slate-800 border border-white/10 px-4 text-white placeholder:text-slate-500 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none transition"
           />
         </div>
 
         {/* Type */}
-        <div>
-          <label>Type</label>
+        <div className="space-y-2">
+          <label className="text-sm font-semibold text-slate-300">Type</label>
           <input
             type="text"
             value={acc.type}
             onChange={(e) => handleChange("type", e.target.value)}
-            className="px-3 py-2 rounded text-black w-full"
+            className="w-full h-12 rounded-xl bg-slate-800 border border-white/10 px-4 text-white placeholder:text-slate-500 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none transition"
           />
         </div>
 
         {/* Location */}
-        <div>
-          <label>Location</label>
+        <div className="space-y-2">
+          <label className="text-sm font-semibold text-slate-300">Location</label>
           <input
             type="text"
             value={acc.location}
             onChange={(e) => handleChange("location", e.target.value)}
-            className="px-3 py-2 rounded text-black w-full"
+            className="w-full h-12 rounded-xl bg-slate-800 border border-white/10 px-4 text-white placeholder:text-slate-500 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none transition"
           />
         </div>
 
         {/* Price per Night */}
-        <div>
-          <label>Price per Night ($)</label>
+        <div className="space-y-2">
+          <label className="text-sm font-semibold text-slate-300">Price per Night ($)</label>
           <input
             type="number"
             value={acc.pricePerNight}
             onChange={(e) => handleChange("pricePerNight", e.target.value)}
-            className="px-3 py-2 rounded text-black w-full"
+            className="w-full h-12 rounded-xl bg-slate-800 border border-white/10 px-4 text-white placeholder:text-slate-500 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none transition"
           />
         </div>
 
         {/* Amenities */}
-        <div>
-          <label>Amenities</label>
+        <div className="space-y-2">
+          <label className="text-sm font-semibold text-slate-300">Amenities</label>
           {acc.amenities.map((item, idx) => (
             <input
               key={idx}
               type="text"
               value={item}
               onChange={(e) => handleArrayChange("amenities", idx, e.target.value)}
-              className="px-3 py-2 rounded text-black w-full mb-1"
+              className="w-full h-12 rounded-xl bg-slate-800 border border-white/10 px-4 text-white placeholder:text-slate-500 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none transition"
             />
           ))}
           <button
             type="button"
             onClick={() => handleAddArrayField("amenities")}
-            className="bg-blue-600 px-2 py-1 rounded mt-1"
+            className="text-xs bg-slate-800 border border-white/10 hover:bg-slate-700 text-teal-400 px-3 py-2 rounded-lg transition-colors"
           >
             Add Amenity
           </button>
         </div>
 
         {/* Images */}
-        <div>
-          <label>Images</label>
-          <input type="file" multiple onChange={handleFileChange} className="text-black mb-2" />
-          {uploading && <p>Uploading images...</p>}
+        <div className="space-y-3">
+          <label className="text-sm font-semibold text-slate-300">Images</label>
+          <input
+            type="file"
+            multiple
+            onChange={handleFileChange}
+            className="w-full text-sm text-slate-300 file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:bg-slate-800 file:text-white hover:file:bg-slate-700"
+          />
+          {uploading && <p className="text-xs text-yellow-500">Uploading images...</p>}
           <div className="flex gap-2 flex-wrap mt-2">
             {acc.images.map((img, idx) => (
-              <img key={idx} src={img} alt={`img-${idx}`} className="w-24 h-24 object-cover rounded" />
+              <img key={idx} src={img} alt={`img-${idx}`} className="w-24 h-24 object-cover rounded-lg border border-white/10" />
             ))}
           </div>
         </div>
 
         <button
           type="submit"
-          className="px-4 py-2 bg-teal-600 rounded hover:bg-teal-700"
+          className="w-full h-12 bg-teal-600 hover:bg-teal-700 text-white font-semibold rounded-xl transition-colors"
         >
           Add Accommodation
         </button>
-      </form>
+        </form>
+      </div>
     </div>
   );
 }
