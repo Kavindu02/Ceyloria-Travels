@@ -71,10 +71,37 @@ const heroSlides = [
 ];
 
 const journeySlides = [
-  { src: "https://res.cloudinary.com/dicvgtusz/image/upload/q_auto,f_webp/v1772084172/beautiful-white-lighthouse-fort-galle-sri-lanka.jpg_1_1_awg0e3.jpg", title: "Galle Fort", desc: "Wander through cobblestone streets of the historic Dutch Fort." },
-  { src: "https://res.cloudinary.com/dicvgtusz/image/upload/q_auto,f_webp/v1772084172/chathura-anuradha-subasinghe-40uQmE9Zq8g-unsplash_fnkyow.jpg", title: "Temple of Tooth", desc: "Experience the sacred temple of the Tooth Relic in Kandy." },
-  { src: "https://res.cloudinary.com/dicvgtusz/image/upload/q_auto,f_webp/v1772084175/demodara-nine-arch-bridge-ella-sri-lanka.jpg_1_1_2_urimmw.jpg", title: "Ella Diaries", desc: "Discover misty mountains and the iconic Nine Arch Bridge." },
-  { src: "https://res.cloudinary.com/dicvgtusz/image/upload/q_auto,f_webp/v1772084173/palm-trees-ocean_1_gbvgze.jpg", title: "Mirissa Shores", desc: "Relax by the pristine beaches and go whale watching." },
+  {
+    src: "https://res.cloudinary.com/dicvgtusz/image/upload/q_auto,f_webp/v1772084172/chathura-anuradha-subasinghe-40uQmE9Zq8g-unsplash_fnkyow.jpg",
+    title: "Temple of Tooth",
+    desc: "Experience the sacred temple of the Tooth Relic in Kandy."
+  },
+  {
+    src: "https://res.cloudinary.com/dicvgtusz/image/upload/q_auto,f_webp/v1772084175/demodara-nine-arch-bridge-ella-sri-lanka.jpg_1_1_2_urimmw.jpg",
+    title: "Train Journeys",
+    desc: "Discover misty mountains and the iconic Nine Arch Bridge."
+  },
+  {
+    src: "https://res.cloudinary.com/dz0hl3qmz/image/upload/v1773581114/iceland-landscape-beautiful-waterscape_1_ehrskb.jpg",
+    title: "Whale Watching",
+    desc: "Relax by the pristine beaches and go whale watching."
+  },
+  // New slides
+  {
+    src: "https://res.cloudinary.com/dz0hl3qmz/image/upload/v1773579214/indian-leopard-nature-habitat-leopard-resting-rock-wildlife-scene_eqnodk.jpg",
+    title: "Leopards & Wildlife",
+    desc: "Spot majestic leopards and elephants in Sri Lanka's wild national parks."
+  },
+  {
+    src: "https://res.cloudinary.com/dz0hl3qmz/image/upload/v1773579481/kevin-olson-ib1INtxbXc8-unsplash_os7vv4.jpg",
+    title: "Surfing",
+    desc: "Ride the waves on Sri Lanka's world-famous surfing beaches."
+  },
+  {
+    src: "https://res.cloudinary.com/dz0hl3qmz/image/upload/v1773579770/tea-plantations-sri-lanka-near-reservoir_qv6zrf.jpg",
+    title: "Tea Plantation Experiences",
+    desc: "Wander through lush tea plantations and discover the art of Ceylon tea."
+  },
 ];
 
 const packages = [
@@ -204,9 +231,9 @@ export default function HomePage() {
       </AnimatePresence>
 
       {/* ---------------------- 1. HERO SECTION ---------------------- */}
-      <div className="relative w-full h-screen overflow-hidden bg-black">
+      <div className="relative w-full h-screen overflow-hidden bg-neutral-200">
         {/* Background Video */}
-        <div className="absolute inset-0 bg-neutral-900 z-0">
+        <div className="absolute inset-0 bg-neutral-100 z-0">
           <video
             ref={videoRef}
             autoPlay
@@ -216,15 +243,16 @@ export default function HomePage() {
             disablePictureInPicture
             preload="auto"
             poster="https://res.cloudinary.com/dicvgtusz/video/upload/q_auto,f_auto,so_0/v1772078453/Ceyloria_travels_yep9qt.jpg"
-            className="absolute inset-0 w-full h-full object-cover"
+            className="absolute inset-0 w-full h-full object-cover brightness-115 contrast-110"
+            style={{ filter: 'brightness(1.10) contrast(1.08)' }}
           >
             <source src="https://res.cloudinary.com/dicvgtusz/video/upload/q_auto,f_auto/v1772078453/Ceyloria_travels_yep9qt.mp4" type="video/mp4" />
           </video>
         </div>
         {/* Gradient Overlays for better text readability */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-black/20 z-10 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/15 to-black/0 z-10 pointer-events-none" />
 
-        <div className="absolute inset-0 z-20 flex flex-col justify-end pb-24 md:pb-32 px-6 md:px-16 lg:px-24">
+        <div className="absolute inset-0 z-20 flex flex-col justify-end pb-40 md:pb-32 px-6 md:px-16 lg:px-24">
           <div className="max-w-6xl">
             <h1 className={`${fontHead} text-4xl sm:text-6xl md:text-7xl lg:text-[8rem] xl:text-[9rem] leading-[0.95] md:leading-[0.9] mb-5 md:mb-7 drop-shadow-2xl tracking-tight`}>
               {["Discover", "The", "Paradise"].map((word, i) => (
@@ -271,14 +299,15 @@ export default function HomePage() {
               <Reveal direction="left">
                 <span className="text-[#b80072] font-bold tracking-[0.3em] uppercase text-xs block mb-4 mt-4 lg:mt-0">( WHY CHOOSE US )</span>
                 <h2 className="text-3xl md:text-4xl lg:text-[40px] font-bold text-gray-900 leading-tight mb-6 mt-4">
-                  <span className="text-[#c8007b]">Why Choose Ceyloria</span> to Make Your Journey Truly Meaningful?
+                  <span className="text-[#c8007b]">Why Choose Ceyloria</span> for Your Dream Sri Lanka Journey?
                 </h2>
                 <p className="text-gray-500 mb-8 leading-relaxed">
-                  Lorem ipsum dolor sit amet consectetur adipiscing elit mauris interdum.
+                  “Ceyloria Travels transforms Sri Lanka trips into unforgettable journeys with expert planning, authentic
+experiences, and personalized service.”
                 </p>
 
                 <ul className="space-y-4 mb-10">
-                  {['Top Destinations', 'Flexible Travel Packages', 'Expert Travel Guides', 'Affordable & Transparent Pricing'].map((item, i) => (
+                  {['Expert Local Knowledge', 'Customized Travel Experiences', 'Reliable & Trusted Service', 'Transparent & Competitive Pricing','Professional Drivers & Guides','24/7 Customer Support'].map((item, i) => (
                     <li key={i} className="flex items-center gap-4 text-gray-900 font-bold">
                       <ArrowRight className="w-5 h-5 text-gray-900 stroke-[3]" />
                       {item}
@@ -291,8 +320,12 @@ export default function HomePage() {
               <Reveal direction="up" delay={200}>
                 <div className="bg-[#1f1f1f] text-white p-10 rounded-[40px] rounded-tl-xl w-full max-w-[320px] flex flex-col justify-between mt-auto">
                   <h3 className="text-3xl font-bold mb-8 leading-tight">Ready to craft<br />your trip?</h3>
-                  <Link to="/plan-my-trip" className="flex items-center gap-3 font-bold text-white hover:text-gray-300 transition-colors w-fit group">
-                    Plan My Trip <ArrowRight className="w-5 h-5 bg-white text-[#1f1f1f] rounded-full p-1 group-hover:translate-x-1 transition-transform" />
+                  
+                  {/* New Styled Button */}
+                  <Link to="/plan-my-trip" className="group relative overflow-hidden bg-white text-gray-900 px-6 py-3 md:px-8 md:py-4 rounded-full font-bold transition-all hover:bg-gray-50 hover:scale-105 active:scale-95 w-fit flex items-center shadow-[0_0_30px_rgba(255,255,255,0.25)] pointer-events-auto mt-4">
+                    <span className="relative z-10 flex items-center gap-2 md:gap-3 text-xs md:text-sm tracking-widest uppercase">
+                      Plan My Trip <ArrowRight className="w-4 h-4 group-hover:translate-x-1.5 transition-transform" />
+                    </span>
                   </Link>
                 </div>
               </Reveal>
@@ -320,7 +353,7 @@ export default function HomePage() {
               {/* Image */}
               <Reveal direction="right">
                 <div className="w-full aspect-[4/3] rounded-tl-[100px] rounded-br-[100px] rounded-tr-2xl rounded-bl-2xl overflow-hidden shadow-sm border border-gray-100 group">
-                  <img src="https://res.cloudinary.com/dicvgtusz/image/upload/q_auto,f_webp/v1772084176/rear-view-man-standing-landscape-against-sky-sunset_gopkt0.jpg" alt="Destination" loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                  <img src="https://res.cloudinary.com/dz0hl3qmz/image/upload/v1773575432/hendrik-cornelissen-jpTT_SAU034-unsplash_rwnj8g.jpg" alt="Destination" loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                 </div>
               </Reveal>
 
@@ -331,7 +364,10 @@ export default function HomePage() {
                     Gateway <span className="font-light italic text-gray-600">to</span><br />Unforgettable<br />Journeys.
                   </h2>
                   <p className="text-gray-500 leading-relaxed text-sm">
-                    Ceyloria is a trusted travel agency that brings the best travel experiences to exotic destinations around the world. We offer exclusive tour packages, private tours, and unforgettable adventures designed to meet the needs of every traveler.
+                    Ceyloria Travels is your trusted partner for discovering the beauty, culture, and adventure of Sri Lanka. From
+golden beaches to misty mountains and ancient heritage sites, we design journeys that turn your travel
+dreams into unforgettable memories.
+
                   </p>
                 </div>
               </Reveal>
@@ -364,7 +400,8 @@ export default function HomePage() {
               <span className="text-white font-bold tracking-[0.3em] uppercase text-xs">( PACKAGES )</span>
               <h2 className={`${fontHead} text-5xl md:text-6xl text-white drop-shadow-md`}>Popular Packages</h2>
               <div className="w-16 h-1 bg-[#a40165] rounded-full mt-2 mb-2"></div>
-              <p className="text-neutral-200 max-w-2xl text-base md:text-lg font-light leading-relaxed">Handpicked experiences designed to show you the soul of the island. Explore our most loved travel plans.</p>
+              <p className="text-neutral-200 max-w-2xl text-base md:text-lg font-light leading-relaxed">“Discover Sri Lanka through our most popular journeys, combining culture, nature, wildlife, and
+unforgettable experiences.”</p>
             </div>
           </Reveal>
 
@@ -406,7 +443,7 @@ export default function HomePage() {
           aria-hidden="true"
           loading="lazy"
           decoding="async"
-          className="absolute top-0 right-[5%] h-full w-[65%] object-contain z-0 opacity-[0.14] pointer-events-none select-none"
+          className="absolute top-40 left-1/2 -translate-x-1/2 md:top-0 md:left-auto md:translate-x-0 md:right-[5%] h-full w-[130%] md:w-[65%] object-contain z-0 opacity-[0.14] pointer-events-none select-none"
         />
 
         <div className="max-w-7xl mx-auto relative z-10 w-full mt-10 md:mt-0">
@@ -445,11 +482,14 @@ export default function HomePage() {
                 <span className="text-[#b80072] font-bold tracking-[0.3em] uppercase text-xs mb-6 block">( ABOUT US )</span>
 
                 <h2 className="text-4xl md:text-5xl lg:text-[48px] font-bold text-gray-900 mb-8 leading-[1.1] tracking-tight">
-                  Great Opportunity for <span className="font-light italic text-gray-500">Adventure</span> & Travels
+                  Discover the True Essence of <span className="font-light italic text-gray-500">Island Life</span> in Sri Lanka
                 </h2>
 
                 <p className="text-gray-500 text-lg leading-relaxed mb-10">
-                  It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. Ceyloria brings you the true essence of island life.
+                 We are a Sri Lanka-based, locally-owned travel company dedicated to crafting unforgettable adventures for
+travelers from around the world. Founded with a simple mission to showcase the real island life beyond the
+usual tourist paths we connect you with authentic experiences, hidden gems, and the heart of Ceylon.
+
                 </p>
 
                 {/* Features Grid */}
@@ -462,8 +502,8 @@ export default function HomePage() {
                       </svg>
                     </div>
                     <div>
-                      <h4 className="text-lg font-bold text-gray-900 mb-1">Trusted travel guide</h4>
-                      <p className="text-gray-500 text-sm leading-relaxed">Aliquam erat volutpat Nullam imperdiet</p>
+                      <h4 className="text-lg font-bold text-gray-900 mb-1">100%</h4>
+                      <p className="text-gray-500 text-sm leading-relaxed">Local Expertise</p>
                     </div>
                   </div>
 
@@ -475,8 +515,8 @@ export default function HomePage() {
                       </svg>
                     </div>
                     <div>
-                      <h4 className="text-lg font-bold text-gray-900 mb-1">Mission & Vision</h4>
-                      <p className="text-gray-500 text-sm leading-relaxed">Ut vehicula dictumst maecenas ante.</p>
+                      <h4 className="text-lg font-bold text-gray-900 mb-1">5k+</h4>
+                      <p className="text-gray-500 text-sm leading-relaxed">Happy Travelers</p>
                     </div>
                   </div>
                 </div>
@@ -641,6 +681,16 @@ export default function HomePage() {
                 <p className="text-xl text-neutral-200 font-light max-w-2xl leading-relaxed border-l-2 border-cyan-400 pl-6 animate-fade-in-up" style={{ animationDelay: '300ms' }}>
                   {slide.desc}
                 </p>
+                  {/* Activity Page Redirect Button */}
+                  <div className="mt-8">
+                    <Link
+                      to="/activities"
+                      className="inline-flex items-center gap-4 text-white bg-[#c8007b] hover:bg-[#a40165] px-8 py-4 rounded-full font-medium shadow-[0_10px_20px_-10px_rgba(0,0,0,0.15)] transition-colors duration-300 group"
+                    >
+                      <span className="text-lg md:text-xl font-semibold">Explore Activities</span>
+                      <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                    </Link>
+                  </div>
               </div>
             </div>
           </div>

@@ -4,8 +4,6 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const languages = [
     { code: 'en', name: 'English', country: 'gb' },
-    { code: 'si', name: 'Sinhala', country: 'lk' },
-    { code: 'ta', name: 'Tamil', country: 'lk' },
     { code: 'fr', name: 'French', country: 'fr' },
     { code: 'de', name: 'German', country: 'de' },
     { code: 'ru', name: 'Russian', country: 'ru' },
@@ -78,8 +76,11 @@ export default function LanguageSwitcher() {
         // Sync state with existing cookie on mount
         const savedLang = getCookie('googtrans');
         if (savedLang) {
-            const code = savedLang.split('/').pop();
-            const found = languages.find(l => l.code === code);
+            // googtrans cookie format: /en/fr or /auto/fr
+            let code = savedLang.split('/').pop();
+            // Some Google Translate setups use zh-CN, but cookie may store zh-CN or zh-cn
+            code = code && code.toLowerCase();
+            const found = languages.find(l => l.code.toLowerCase() === code);
             if (found) setCurrentLang(found);
         }
 
@@ -145,9 +146,9 @@ export default function LanguageSwitcher() {
         const setCookies = (langPath) => {
             const expireStr = "expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/;";
             // Set without domain (standard)
-            document.cookie = `googtrans=${langPath}; ${expireStr}`;
+            document.cookie = `googtrans=${langPath}; ${expireStr} path=/;`;
             // Also set with domain to ensure it sticks on hosted environments
-            document.cookie = `googtrans=${langPath}; ${expireStr} domain=${host};`;
+            document.cookie = `googtrans=${langPath}; ${expireStr} domain=${host}; path=/;`;
         };
 
         const select = document.querySelector('.goog-te-combo');

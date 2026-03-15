@@ -88,20 +88,25 @@ const PackagesPage = () => {
         if (!res.ok) throw new Error('Failed to load packages');
         const data = await res.json();
 
-        setPackages(data);
+        if (Array.isArray(data)) {
+          setPackages(data);
 
-        const locations = new Set();
-        let highestPrice = 0;
+          const locations = new Set();
+          let highestPrice = 0;
 
-        data.forEach(pkg => {
-          const parsedCities = safeParseJSON(pkg.citiesCovered);
-          parsedCities?.forEach(c => locations.add(c));
-          if (pkg.price > highestPrice) highestPrice = pkg.price;
-        });
+          data.forEach(pkg => {
+            const parsedCities = safeParseJSON(pkg.citiesCovered);
+            parsedCities?.forEach(c => locations.add(c));
+            if (pkg.price > highestPrice) highestPrice = pkg.price;
+          });
 
-        setAvailableLocations([...locations]);
-        setMaxPriceLimit(highestPrice + 500);
-        setPriceRange(highestPrice + 500);
+          setAvailableLocations([...locations]);
+          setMaxPriceLimit(highestPrice + 500);
+          setPriceRange(highestPrice + 500);
+        } else {
+          console.error("Expected array but got:", data);
+          setError("Failed to load packages: invalid data format");
+        }
         setLoading(false);
       } catch (err) {
         setError(err.message || 'Something went wrong');

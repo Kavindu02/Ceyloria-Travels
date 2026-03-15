@@ -40,12 +40,6 @@ const CuratedPackageCard = ({ pkg }) => {
           decoding="async"
           className="w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-110"
         />
-        {/* Plan Badge */}
-        <div className="absolute top-4 left-4 backdrop-blur-lg bg-black/30 px-4 py-1.5 rounded-full border border-white/20 shadow-lg">
-          <span className="text-[10px] font-bold text-white uppercase tracking-widest">
-            {pkg.shortDescription?.split(' ')[0] || "Travel Plan"}
-          </span>
-        </div>
       </div>
 
       {/* Content Section */}

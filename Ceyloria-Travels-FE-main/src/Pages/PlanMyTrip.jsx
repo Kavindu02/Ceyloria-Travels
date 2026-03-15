@@ -411,7 +411,7 @@ export default function PlanMyTrip() {
                                 Next Step <ChevronRight className="w-5 h-5" />
                             </button>
                         ) : (
-                            <button form="planForm" type="submit" disabled={submitting} className="flex items-center gap-2 bg-amber-500 text-white px-8 py-3 rounded-full hover:bg-amber-600 font-bold transition-all shadow-lg shadow-amber-500/30 disabled:opacity-70 disabled:cursor-not-allowed">
+                            <button form="planForm" type="submit" disabled={submitting} className="flex items-center justify-center gap-2 bg-amber-500 text-white rounded-full hover:bg-amber-600 font-bold transition-all shadow-lg shadow-amber-500/30 disabled:opacity-70 disabled:cursor-not-allowed mx-auto sm:mx-0 sm:w-auto sm:text-base text-sm px-4 py-3">
                                 {submitting ? "Sending Request..." : "Get My Custom Plan"} <Send className="w-4 h-4 ml-1" />
                             </button>
                         )}

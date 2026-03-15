@@ -265,10 +265,12 @@ export default function Contact() {
               <Reveal direction="up" delay={200}>
                 <div className="h-64 rounded-[40px] overflow-hidden shadow-md border border-gray-200 group relative">
                   <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d126743.63297228478!2d79.786164!3d6.921838!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ae2593c8b6a5e7b%3A0x2b9e3c9a1b6a8d6c!2sColombo!5e0!3m2!1sen!2slk!4v1734320000000"
-                    className="w-full h-full grayscale hover:grayscale-0 transition-all duration-1000"
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3956.8531201589485!2d80.8971553!3d7.370355000000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ae4a1f866a065d5%3A0x2a2b73cfba3781e2!2sDumbara%20attale(kalugala)!5e0!3m2!1sen!2slk!4v1773583650500!5m2!1sen!2slk"
+                    className="w-full h-full transition-all duration-1000"
                     allowFullScreen
                     loading="lazy"
+                    style={{ border: 0 }}
+                    referrerPolicy="no-referrer-when-downgrade"
                   />
                   <div className="absolute inset-0 pointer-events-none border-[12px] border-white/10 rounded-[40px]" />
                 </div>

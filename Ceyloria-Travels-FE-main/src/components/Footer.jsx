@@ -5,12 +5,13 @@ import {
   Phone,
   Mail,
   Facebook,
-  Twitter,
   Instagram,
-  Youtube,
+  Linkedin,
   ArrowRight,
-  Send
+  Send,
 } from "lucide-react";
+
+import { FaPinterest } from "react-icons/fa";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -45,9 +46,9 @@ export default function Footer() {
             </p>
 
             <div className="space-y-4 pt-2">
-              <ContactItem icon={MapPin} text="Sri Mahinda Dharma MW, Colombo 09." />
-              <ContactItem icon={Phone} text="+94 742216579" />
-              <ContactItem icon={Mail} text="sdksolutions01@gmail.com" />
+              <ContactItem icon={MapPin} text="No 52,Dumbaragama, Kalugala, Sri Lanka" />
+              <ContactItem icon={Phone} text="0714818180" />
+              <ContactItem icon={Mail} text="info@ceyloriatravels.com" />
             </div>
           </div>
 
@@ -85,10 +86,12 @@ export default function Footer() {
             <div>
               <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-gray-400">Follow Us</h3>
               <div className="flex gap-4">
-                <SocialIcon Icon={Facebook} href="https://www.facebook.com/profile.php?id=61583355311542" />
-                <SocialIcon Icon={Twitter} href="#" />
-                <SocialIcon Icon={Instagram} href="#" />
-                <SocialIcon Icon={Youtube} href="#" />
+                <SocialIcon Icon={Facebook} href="https://www.facebook.com/profile.php?id=61579233837714" />
+                <SocialIcon Icon={Instagram} href="https://l.facebook.com/l.php?u=https%3A%2F%2Fwww.instagram.com%2Fceyloriatravels%3Ffbclid%3DIwZXh0bgNhZW0CMTAAYnJpZBExSG9hZ1VjQk1EVVN5SkV3NXNydGMGYXBwX2lkEDIyMjAzOTE3ODgyMDA4OTIAAR45UFIu1JUfravTLVcxTme7I-CG2fkTwSW9PSG5KuUtpE_ZkV0_kbnMXTq1xg_aem_jAas6l3mBuedKxTqPSsSXQ&h=AT6dCRs_0BBFwZmoTGXfy84M2SmYeU2d_ZhP0gEj4tfAfsKLbXgU7LOlsdmazYV-nCYjehlgrqxwIc7IQ20j3mAHvhc0SKRQ398BQesoDWDJzLKPquz6QaGWEkTn5Jom0DmE9uPjsXHF_yifHKeO" />
+                <SocialIcon Icon={Linkedin} href="https://l.facebook.com/l.php?u=https%3A%2F%2Flinkedin.com%2Fin%2Fhttps%253A%252F%252Fwww.linkedin.com%252Fcompany%252Fceyloria-travels%252F%3Ffbclid%3DIwZXh0bgNhZW0CMTAAYnJpZBExSG9hZ1VjQk1EVVN5SkV3NXNydGMGYXBwX2lkEDIyMjAzOTE3ODgyMDA4OTIAAR7Mr8o2EDusP64yCujJS318ujK7INdtxuwUpa2JLBU1h8BMIBx3QxyeFhazpw_aem_p0aNCM9jlzAyw5w1sTRxRA&h=AT5AU0pe3uzKdQQq4G7ZeWemRRCvp0e1sjTN12cm7B9J7IPnaBEhfQ6_I7a7v6nStMGg119krho2u3S5ItKuz31D6UUL2jBnC7I9FALA7PgTGP93V3S8si9ZYElaQe_4GwJAcfvvsnUE-vZ5PQcn" />
+                <SocialIcon Icon={FaPinterest} href="https://l.facebook.com/l.php?u=https%3A%2F%2Fpinterest.com%2Fceyloriatravels%252F%3Ffbclid%3DIwZXh0bgNhZW0CMTAAYnJpZBExSG9hZ1VjQk1EVVN5SkV3NXNydGMGYXBwX2lkEDIyMjAzOTE3ODgyMDA4OTIAAR7InOMwVfRi9RNHG4qtW94Y8otg2e1vqSsNAZkrKpIT63T5XObsvULMScob0A_aem_fPsdZVCVYoPMEMX5TJ9PLg&h=AT7Yc-Zp8axpUrERL4yfhKpeWylTzOr26uVk6Ok3DoXJlXpI0giUgZTXs8-N7yC6gg9r0UEg9zv6gQcp1PJkVWusXl6Mpl8NUCK1MIJIqnquMMjVNBmqfHg147eWn7AL5f2JKHk9QdoeFwyeEPGc/" />
+                
+
               </div>
             </div>
           </div>

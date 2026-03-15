@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { ArrowRight, Search, Calendar, Clock, Tag, User } from "lucide-react";
+import Gallery from "../components/Gallery";
 
 // ---------------------- REUSABLE ANIMATION COMPONENT ----------------------
 const Reveal = ({ children, className = "", delay = 0, direction = "up" }) => {
@@ -227,7 +228,23 @@ const Blog = () => {
         </div>
       </section>
 
-
+{/* --- GALLERY SECTION (ALWAYS SHOWS ELLA, COLOMBO, GALLE, ANURADHAPURA) --- */}
+      <section className="py-24 bg-white relative border-b border-gray-100">
+        <div className="max-w-[1400px] mx-auto px-6 md:px-12 lg:px-24">
+          <div className="flex flex-col items-center mb-16 gap-2">
+            <span className="text-[#b80072] font-bold tracking-[0.3em] uppercase text-xs">( DESTINATIONS )</span>
+            <h2 className="text-4xl md:text-5xl lg:text-[48px] font-bold text-gray-900 mb-4 leading-[1.1] tracking-tight text-center">
+              Must-Visit Destinations
+            </h2>
+            <p className="text-gray-500 max-w-2xl text-base md:text-lg font-light leading-relaxed text-center">
+              Explore the beauty of Sri Lanka through our top picks. These destinations are always worth discovering!
+            </p>
+          </div>
+          <div className="w-full">
+            <Gallery />
+          </div>
+        </div>
+      </section>
     </div>
   );
 };

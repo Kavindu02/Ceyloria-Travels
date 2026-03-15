@@ -17,12 +17,12 @@ const Destinations = () => {
     const safeCategory = category ? decodeURIComponent(String(category)).trim().toLowerCase() : "";
     
     // Derived state
-    const selectedCategory = categoryData.find(c => {
+    const selectedCategory = Array.isArray(categoryData) ? categoryData.find(c => {
         if (!c || !safeCategory) return false;
         const cId = c.id ? String(c.id).trim().toLowerCase() : "";
         const cTitle = c.title ? String(c.title).trim().toLowerCase().replace(/\s+/g, '-') : "";
         return cId === safeCategory || cTitle === safeCategory || c.id === category;
-    });
+    }) : null;
 
     // Fetch Data from Backend
     useEffect(() => {

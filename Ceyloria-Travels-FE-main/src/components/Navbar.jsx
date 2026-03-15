@@ -109,14 +109,15 @@ export default function Navbar() {
       </div>
 
       {/* Mobile Menu Overlay */}
-      <AnimatePresence>
-        {menuOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "100vh" }}
-            exit={{ opacity: 0, height: 0 }}
-            className="fixed inset-0 top-0 bg-black z-40 flex flex-col pt-24 px-6 md:hidden overflow-y-auto"
-          >
+      <div className="relative">
+        <AnimatePresence>
+          {menuOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "100vh" }}
+              exit={{ opacity: 0, height: 0 }}
+              className="fixed inset-0 top-0 bg-black z-40 flex flex-col pt-24 px-6 md:hidden overflow-y-auto"
+            >
             {/* Background Image for Mobile Menu - Faint */}
             <div className="absolute inset-0 z-0 opacity-60 select-none pointer-events-none">
                 <img 
@@ -138,9 +139,12 @@ export default function Navbar() {
                 "About",
                 "Blogs",
                 "Contact",
+                "Plan My Trip",
               ].map((item, idx) => {
                 const linkPath =
-                  item === "Home" ? "/" : `/${item.toLowerCase()}`;
+                  item === "Home" ? "/"
+                  : item === "Plan My Trip" ? "/plan-my-trip"
+                  : `/${item.toLowerCase()}`;
                 const isActive =
                   item === "Home"
                     ? location.pathname === "/"
@@ -156,7 +160,7 @@ export default function Navbar() {
                     <Link
                       to={linkPath}
                       onClick={() => setMenuOpen(false)}
-                      className={`text-2xl font-bold flex flex-col items-start w-max ${isActive ? "text-[#ffd21f]" : item === "Contact" ? "text-[#ae046d]" : "text-white"}`}
+                      className={`text-2xl font-bold flex flex-col items-start w-max ${isActive ? "text-[#ffd21f]" : item === "Contact" ? "text-[#ae046d]" : item === "Plan My Trip" ? "text-[#c8007b]" : "text-white"}`}
                     >
                       {item === "Contact" ? "Contact Us" : item}
                       <span
@@ -169,7 +173,8 @@ export default function Navbar() {
             </nav>
           </motion.div>
         )}
-      </AnimatePresence>
+        </AnimatePresence>
+      </div>
     </nav>
   );
 }

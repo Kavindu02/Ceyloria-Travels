@@ -7,7 +7,8 @@ export default function CeyloriaLoader() {
       exit={{ opacity: 0 }}
       layout
       transition={{ duration: 0.8, ease: "easeInOut" }}
-      className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#faf9f6]"
+      className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#faf9f6] notranslate"
+      translate="no"
     >
       {/* Background Decorative Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
