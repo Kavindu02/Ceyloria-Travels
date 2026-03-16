@@ -104,17 +104,15 @@ export default function ContactAdminPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="rounded-2xl bg-gradient-to-r from-teal-500 to-blue-600 p-[1px]">
-        <div className="rounded-2xl bg-slate-900 p-6 flex justify-between items-center">
+      <div className="rounded-2xl bg-slate-900/50 border border-white/10 p-6 flex justify-between items-center">
           <div>
             <h1 className="text-2xl font-bold text-white">Contact Inquiries</h1>
-            <p className="text-teal-200 mt-1">Manage customer contact submissions</p>
+            <p className="text-slate-400 mt-1">Manage customer contact submissions</p>
           </div>
-          <div className="bg-teal-600/20 border border-teal-500/50 rounded-lg px-4 py-2">
-            <p className="text-teal-300 font-bold text-lg">{contacts.length}</p>
-            <p className="text-sm text-teal-200">Total Inquiries</p>
+          <div className="bg-slate-800 border border-white/10 rounded-lg px-4 py-2">
+            <p className="text-teal-400 font-bold text-lg">{contacts.length}</p>
+            <p className="text-sm text-slate-400">Total Inquiries</p>
           </div>
-        </div>
       </div>
 
       {/* Main Content */}

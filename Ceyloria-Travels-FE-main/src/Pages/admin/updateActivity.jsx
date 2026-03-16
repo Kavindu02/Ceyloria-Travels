@@ -2,8 +2,39 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { FaPlus, FaTrash, FaSave, FaArrowLeft, FaCloudUploadAlt } from "react-icons/fa";
+import { FaPlus, FaTrash, FaArrowLeft, FaCloudUploadAlt } from "react-icons/fa";
 import mediaUpload from "../../utils/mediaUpload";
+
+const normalizeItems = (items) => {
+    if (Array.isArray(items)) {
+        return items
+            .filter((item) => item && typeof item === "object")
+            .map((item) => ({
+                title: item.title || "",
+                description: item.description || "",
+                image: item.image || "",
+            }));
+    }
+
+    if (typeof items === "string") {
+        try {
+            const parsed = JSON.parse(items);
+            return normalizeItems(parsed);
+        } catch {
+            return [];
+        }
+    }
+
+    if (items && typeof items === "object") {
+        return [{
+            title: items.title || "",
+            description: items.description || "",
+            image: items.image || "",
+        }];
+    }
+
+    return [];
+};
 
 export default function UpdateActivity() {
     const { id } = useParams();
@@ -37,8 +68,7 @@ export default function UpdateActivity() {
                     image: data.image || "",
                 });
                 
-                // If they have old 'images' but no 'items', or just set items
-                setItems(data.items || []);
+                setItems(normalizeItems(data.items));
             } catch (err) {
                 console.error("Error fetching activity:", err);
                 toast.error("Failed to load activity data");
@@ -55,7 +85,10 @@ export default function UpdateActivity() {
     };
 
     const handleItemChange = (index, field, value) => {
-        const newItems = [...items];
+        const newItems = [...normalizeItems(items)];
+        if (!newItems[index]) {
+            newItems[index] = { title: "", description: "", image: "" };
+        }
         newItems[index][field] = value;
         setItems(newItems);
     };
@@ -86,19 +119,20 @@ export default function UpdateActivity() {
     };
 
     const addItem = () => {
-        if (items.length >= 10) {
+        if (normalizeItems(items).length >= 10) {
             toast.error("Maximum 10 items allowed per activity.");
             return;
         }
-        setItems([...items, { title: "", description: "", image: "" }]);
+        setItems([...normalizeItems(items), { title: "", description: "", image: "" }]);
     };
 
     const removeItem = (index) => {
-        if (items.length === 1) {
+        const currentItems = normalizeItems(items);
+        if (currentItems.length === 1) {
             toast.error("At least one item is required.");
             return;
         }
-        const newItems = items.filter((_, i) => i !== index);
+        const newItems = currentItems.filter((_, i) => i !== index);
         setItems(newItems);
     };
 
@@ -106,7 +140,7 @@ export default function UpdateActivity() {
         e.preventDefault();
         setUpdating(true);
 
-        const validItems = items.filter(it => it.title && it.description && it.image);
+        const validItems = normalizeItems(items).filter(it => it.title && it.description && it.image);
         if (validItems.length === 0) {
             toast.error("Please add at least one valid item with an image.");
             setUpdating(false);
@@ -142,10 +176,10 @@ export default function UpdateActivity() {
                 onClick={() => navigate("/admin/activities")}
                 className="text-slate-400 hover:text-white flex items-center gap-2 mb-6 transition-colors font-medium"
             >
-                <FaArrowLeft /> Back to activities
+                <FaArrowLeft /> Back to Activities
             </button>
 
-            <div className="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-white/5">
+            <div className="bg-slate-900/50 rounded-2xl p-8 shadow-2xl border border-white/10">
                 <h1 className="text-3xl font-black text-white mb-8 tracking-tight">Update Activity Collection</h1>
 
                 <form onSubmit={handleSubmit} className="space-y-10">
@@ -153,7 +187,7 @@ export default function UpdateActivity() {
                     {/* --- Activity Overview --- */}
                     <div className="space-y-6 border-b border-white/5 pb-10">
                         <div className="flex items-center gap-3 mb-2">
-                             <div className="w-8 h-8 rounded-lg bg-blue-600/20 text-blue-500 flex items-center justify-center font-bold text-sm">1</div>
+                            <div className="w-8 h-8 rounded-lg bg-teal-500/20 text-teal-400 flex items-center justify-center font-bold text-sm">1</div>
                              <h2 className="text-xl font-bold text-white">General Overview</h2>
                         </div>
                         
@@ -165,7 +199,7 @@ export default function UpdateActivity() {
                                     name="title"
                                     value={formData.title}
                                     onChange={handleChange}
-                                    className="w-full bg-slate-800/50 border border-white/5 rounded-2xl px-5 py-3.5 text-white focus:ring-2 focus:ring-blue-600 outline-none transition-all placeholder:text-slate-600"
+                                    className="w-full bg-slate-800 border border-white/10 rounded-xl px-5 py-3.5 text-white focus:border-teal-500 outline-none transition-all placeholder:text-slate-600"
                                     placeholder="e.g. Whale Watching Adventures"
                                     required
                                 />
@@ -176,7 +210,7 @@ export default function UpdateActivity() {
                                     name="category"
                                     value={formData.category}
                                     onChange={handleChange}
-                                    className="w-full bg-slate-800/50 border border-white/5 rounded-2xl px-5 py-3.5 text-white focus:ring-2 focus:ring-blue-600 outline-none transition-all"
+                                    className="w-full bg-slate-800 border border-white/10 rounded-xl px-5 py-3.5 text-white focus:border-teal-500 outline-none transition-all"
                                     required
                                 >
                                     <option value="Water Sports">Water Sports</option>
@@ -195,7 +229,7 @@ export default function UpdateActivity() {
                                 name="tagline"
                                 value={formData.tagline}
                                 onChange={handleChange}
-                                className="w-full bg-slate-800/50 border border-white/5 rounded-2xl px-5 py-3.5 text-white focus:ring-2 focus:ring-blue-600 outline-none transition-all placeholder:text-slate-600"
+                                className="w-full bg-slate-800 border border-white/10 rounded-xl px-5 py-3.5 text-white focus:border-teal-500 outline-none transition-all placeholder:text-slate-600"
                                 placeholder="A short, catchy phrase about this activity..."
                                 required
                             />
@@ -208,7 +242,7 @@ export default function UpdateActivity() {
                                 value={formData.description}
                                 onChange={handleChange}
                                 rows="4"
-                                className="w-full bg-slate-800/50 border border-white/5 rounded-2xl px-5 py-4 text-white focus:ring-2 focus:ring-blue-600 outline-none transition-all placeholder:text-slate-600 resize-none"
+                                className="w-full bg-slate-800 border border-white/10 rounded-xl px-5 py-4 text-white focus:border-teal-500 outline-none transition-all placeholder:text-slate-600 resize-none"
                                 placeholder="Describe the overall experience..."
                                 required
                             />
@@ -234,7 +268,7 @@ export default function UpdateActivity() {
 
                                 <div className="flex-1">
                                     <label className="cursor-pointer bg-white/5 border border-white/10 hover:bg-white/10 text-white px-5 py-2.5 rounded-xl inline-flex items-center gap-2 transition-all font-bold text-sm">
-                                        <FaCloudUploadAlt className="text-blue-500" /> 
+                                        <FaCloudUploadAlt className="text-teal-400" /> 
                                         <span>{formData.image ? "Replace Image" : "Upload Image"}</span>
                                         <input 
                                             type="file" 
@@ -254,20 +288,20 @@ export default function UpdateActivity() {
                     <div className="space-y-8">
                         <div className="flex justify-between items-center">
                             <div className="flex items-center gap-3">
-                                <div className="w-8 h-8 rounded-lg bg-blue-600/20 text-blue-500 flex items-center justify-center font-bold text-sm">2</div>
-                                <h2 className="text-xl font-bold text-white">Activity Timeline / Highlights ({items.length})</h2>
+                                <div className="w-8 h-8 rounded-lg bg-teal-500/20 text-teal-400 flex items-center justify-center font-bold text-sm">2</div>
+                                <h2 className="text-xl font-bold text-white">Activity Timeline / Highlights ({normalizeItems(items).length})</h2>
                             </div>
                             <button
                                 type="button"
                                 onClick={addItem}
-                                className="text-xs font-black uppercase tracking-widest bg-blue-100 hover:bg-blue-600/20 text-blue-500 px-4 py-2.5 rounded-xl transition-all flex items-center gap-2 border border-blue-100 shadow-lg shadow-blue-600/5 active:scale-95"
+                                className="text-xs bg-slate-800 border border-slate-700 hover:bg-slate-700 text-teal-400 px-4 py-2.5 rounded-lg transition-colors flex items-center gap-2"
                             >
-                                <FaPlus /> Add Highlight
+                                <img src="/admin-add-icon.svg" alt="add" className="w-4 h-4" /> Add Highlight
                             </button>
                         </div>
 
                         <div className="grid grid-cols-1 gap-6">
-                            {items.map((it, index) => (
+                            {normalizeItems(items).map((it, index) => (
                                 <div key={index} className="bg-slate-800/20 p-6 md:p-8 rounded-[2rem] border border-white/5 relative group transition-all hover:bg-slate-800/30">
                                     <button
                                         type="button"
@@ -290,7 +324,7 @@ export default function UpdateActivity() {
                                                     </div>
                                                 )}
                                             </div>
-                                            <label className="block w-full cursor-pointer bg-slate-900/50 border border-white/5 hover:border-blue-500/50 text-slate-500 hover:text-white px-3 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest text-center transition-all">
+                                            <label className="block w-full cursor-pointer bg-slate-900/50 border border-white/10 hover:border-teal-500 text-slate-400 hover:text-white px-3 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest text-center transition-all">
                                                 {uploading ? "Uploading..." : "Upload Photo"}
                                                 <input 
                                                     type="file" 
@@ -310,7 +344,7 @@ export default function UpdateActivity() {
                                                     type="text"
                                                     value={it.title}
                                                     onChange={(e) => handleItemChange(index, "title", e.target.value)}
-                                                    className="w-full bg-transparent border-b border-white/10 pb-2 text-xl font-bold text-white focus:border-blue-600 outline-none transition-all placeholder:text-slate-700"
+                                                    className="w-full bg-transparent border-b border-white/10 pb-2 text-xl font-bold text-white focus:border-teal-500 outline-none transition-all placeholder:text-slate-700"
                                                     placeholder="e.g. Early Morning Departure"
                                                 />
                                             </div>
@@ -320,7 +354,7 @@ export default function UpdateActivity() {
                                                     value={it.description}
                                                     onChange={(e) => handleItemChange(index, "description", e.target.value)}
                                                     rows="3"
-                                                    className="w-full bg-transparent border border-white/5 rounded-xl p-3 text-slate-400 text-sm focus:border-blue-600 outline-none resize-none transition-all placeholder:text-slate-700 leading-relaxed"
+                                                    className="w-full bg-transparent border border-white/10 rounded-xl p-3 text-slate-400 text-sm focus:border-teal-500 outline-none resize-none transition-all placeholder:text-slate-700 leading-relaxed"
                                                     placeholder="Briefly describe this moment or sub-activity..."
                                                 />
                                             </div>
@@ -336,9 +370,9 @@ export default function UpdateActivity() {
                         <button
                             type="submit"
                             disabled={updating || uploading}
-                            className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-10 py-4 rounded-2xl font-black uppercase tracking-widest text-sm hover:shadow-2xl hover:shadow-blue-600/20 transition-all active:scale-95 disabled:opacity-50 flex items-center gap-3"
+                            className="w-full h-14 rounded-xl bg-gradient-to-r from-blue-600 to-teal-500 text-white font-bold text-lg hover:shadow-lg hover:shadow-blue-600/20 transition disabled:opacity-50 flex items-center justify-center gap-2"
                         >
-                            {updating ? "Saving Changes..." : <><FaSave /> Update Activity</>}
+                            {updating ? "Saving Changes..." : "Update Activity"}
                         </button>
                     </div>
 

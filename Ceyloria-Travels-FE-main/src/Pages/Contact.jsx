@@ -221,7 +221,7 @@ export default function Contact() {
                         </div>
                         <div>
                           <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mb-1">Our Studio</p>
-                          <p className="text-gray-200 group-hover/item:text-white transition-colors">Sri Mahinda Dharma MW,<br /> Colombo 09.</p>
+                          <p className="text-gray-200 group-hover/item:text-white transition-colors">No 52,Dumbaragama, Kalugala, Sri Lanka.</p>
                         </div>
                       </div>
 
@@ -231,7 +231,7 @@ export default function Contact() {
                         </div>
                         <div>
                           <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mb-1">Send a Message</p>
-                          <p className="text-gray-200 group-hover/item:text-white transition-colors">sdksolutions01@gmail.com</p>
+                          <p className="text-gray-200 group-hover/item:text-white transition-colors">info@ceyloriatravels.com</p>
                         </div>
                       </div>
 
@@ -241,7 +241,7 @@ export default function Contact() {
                         </div>
                         <div>
                           <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mb-1">24/7 Hotline</p>
-                          <p className="text-gray-200 group-hover/item:text-white transition-colors">+94 742216579</p>
+                          <p className="text-gray-200 group-hover/item:text-white transition-colors">0714818180</p>
                         </div>
                       </div>
                     </div>

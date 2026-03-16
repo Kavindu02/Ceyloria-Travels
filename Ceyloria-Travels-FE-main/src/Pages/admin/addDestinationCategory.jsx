@@ -2,7 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { FaPlus, FaTrash, FaSave, FaArrowLeft, FaCloudUploadAlt } from "react-icons/fa";
+import { FaPlus, FaTrash, FaArrowLeft, FaCloudUploadAlt } from "react-icons/fa";
 import mediaUpload from "../../utils/mediaUpload"; // [NEW]
 
 export default function AddDestinationCategory() {
@@ -125,12 +125,12 @@ export default function AddDestinationCategory() {
     <div className="p-6 max-w-5xl mx-auto">
       <button
         onClick={() => navigate("/admin/destinations")}
-        className="text-slate-400 hover:text-white flex items-center gap-2 mb-6 transition-colors"
+        className="text-slate-400 hover:text-white flex items-center gap-2 mb-6 transition-colors font-medium"
       >
         <FaArrowLeft /> Back to Destinations
       </button>
 
-      <div className="bg-slate-900 rounded-2xl p-8 shadow-xl border border-slate-800">
+      <div className="bg-slate-900/50 rounded-2xl p-8 shadow-xl border border-white/10">
         <h1 className="text-3xl font-bold text-white mb-8">Add New Destination Category</h1>
 
         <form onSubmit={handleSubmit} className="space-y-8">
@@ -241,9 +241,9 @@ export default function AddDestinationCategory() {
                 <button
                     type="button"
                     onClick={addDestination}
-                    className="text-sm bg-slate-800 hover:bg-slate-700 text-teal-400 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-2 border border-slate-700"
+                  className="text-xs bg-slate-800 border border-slate-700 hover:bg-slate-700 text-teal-400 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-2"
                 >
-                    <FaPlus /> Add Destination
+                  <img src="/admin-add-icon.svg" alt="add" className="w-4 h-4" /> Add Destination
                 </button>
             </div>
 
@@ -323,9 +323,9 @@ export default function AddDestinationCategory() {
             <button
               type="submit"
               disabled={loading || uploading}
-              className="bg-gradient-to-r from-teal-500 to-blue-600 text-white px-8 py-3 rounded-xl font-bold hover:shadow-lg hover:shadow-teal-500/20 transition-all disabled:opacity-50 flex items-center gap-2"
+              className="w-full h-14 rounded-xl bg-gradient-to-r from-blue-600 to-teal-500 text-white font-bold text-lg hover:shadow-lg hover:shadow-blue-600/20 transition disabled:opacity-50 flex items-center justify-center gap-2"
             >
-              {loading ? "Saving..." : <><FaSave /> Save Category</>}
+              {loading ? "Saving..." : <><img src="/admin-add-icon.svg" alt="add" className="w-5 h-5" /> Save Category</>}
             </button>
           </div>
 

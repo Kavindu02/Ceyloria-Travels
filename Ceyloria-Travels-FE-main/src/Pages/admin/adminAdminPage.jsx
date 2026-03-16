@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { RiAdminFill, RiLockPasswordLine, RiDeleteBin6Line } from "react-icons/ri";
+import { RiAdminFill, RiLockPasswordLine, RiDeleteBin6Line, RiArrowLeftLine } from "react-icons/ri";
 
 export default function AddAdminPage() {
   const [email, setEmail] = useState("");
@@ -104,10 +104,19 @@ export default function AddAdminPage() {
   return (
     <div className="flex flex-col items-center min-h-[90vh] pt-10 px-4 text-white">
 
+      <div className="w-full max-w-3xl mb-6">
+        <Link
+          to="/admin"
+          className="text-slate-400 hover:text-white flex items-center gap-2 transition-colors font-medium"
+        >
+          <RiArrowLeftLine /> Back to Dashboard
+        </Link>
+      </div>
+
       {/* ============================
           EXISTING ADMIN LIST
       ============================= */}
-      <div className="w-full max-w-3xl mb-10 p-6 rounded-2xl bg-slate-900/60 border border-white/10">
+      <div className="w-full max-w-3xl mb-10 p-6 rounded-2xl bg-slate-900/50 border border-white/10">
         <h2 className="text-xl font-bold mb-4">Existing Admins</h2>
 
         {loadingAdmins ? (
@@ -119,7 +128,7 @@ export default function AddAdminPage() {
             {admins.map((admin) => (
               <div
                 key={admin.id}
-                className="p-3 bg-slate-800 rounded-xl flex justify-between items-center"
+                className="p-3 bg-slate-800 border border-white/10 rounded-xl flex justify-between items-center"
               >
                 {/* Admin Info */}
                 <div>
@@ -168,12 +177,12 @@ export default function AddAdminPage() {
               placeholder="admin@travelsite.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full h-12 rounded-xl bg-slate-800 border border-white/10 px-4 mt-2 text-white"
+              className="w-full h-12 rounded-xl bg-slate-800 border border-white/10 px-4 mt-2 text-white focus:border-teal-500 outline-none transition"
               required
             />
           </div>
 
-          <div className="flex items-start gap-3 p-4 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-600 text-sm">
+          <div className="flex items-start gap-3 p-4 rounded-xl bg-slate-800/70 border border-white/10 text-slate-300 text-sm">
             <RiLockPasswordLine className="text-lg" />
             <p>
               Default password will be <span className="font-mono">admin123</span>.  
@@ -184,13 +193,13 @@ export default function AddAdminPage() {
           <button
             type="submit"
             disabled={isLoading}
-            className="h-12 rounded-xl bg-gradient-to-r from-teal-500 to-blue-600 text-white font-bold disabled:opacity-50"
+            className="w-full h-14 rounded-xl bg-gradient-to-r from-blue-600 to-teal-500 text-white font-bold text-lg hover:shadow-lg hover:shadow-blue-600/20 transition disabled:opacity-50"
           >
             {isLoading ? "Creating..." : "Create Admin"}
           </button>
         </form>
 
-        <Link to="/admin" className="block text-center mt-6 text-slate-400 underline">
+        <Link to="/admin" className="block text-center mt-6 text-slate-400 hover:text-white transition-colors">
           Back to Dashboard
         </Link>
       </div>

@@ -5,7 +5,6 @@ import {
   Star,
   Share2,
   Check,
-  ChevronLeft,
   ShieldCheck,
   Home,
   Users,
@@ -131,226 +130,238 @@ const AccommodationOverviewPage = () => {
   // Image Logic
   const parsedImages = safeParseJSON(accommodation.images) || [];
   const images = (Array.isArray(parsedImages) ? parsedImages : [parsedImages]).filter(img => img && String(img).trim() !== "");
-  const mainImage = getImageUrl(images[selectedImageIndex]);
+  const mainImage = getImageUrl(images[selectedImageIndex] || images[0]);
 
   // Price Calculation
   const pricePerNight = accommodation.pricePerNight || 0;
   const totalPrice = pricePerNight * selectedDays * selectedRooms;
 
+  const handleShare = async () => {
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: accommodation.name,
+          text: `Check out this accommodation: ${accommodation.name}`,
+          url: window.location.href,
+        });
+      } else {
+        await navigator.clipboard.writeText(window.location.href);
+        alert('Link copied to clipboard!');
+      }
+    } catch (error) {
+      if (error?.name !== 'AbortError') {
+        console.error('Sharing failed:', error);
+      }
+    }
+  };
+
   return (
-    <div className="bg-white selection:bg-[#c8007b] selection:text-white overflow-x-hidden min-h-screen pb-16">
-
-      {/* --- HERO IMAGE SECTION --- */}
-      <div className="relative h-[60vh] md:h-[70vh] w-full bg-black overflow-hidden">
-        <div className="absolute inset-0">
-          <img
-            src={mainImage || "https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=2070&auto=format&fit=crop"}
-            alt={accommodation.name}
-            className="w-full h-full object-cover animate-subtle-zoom opacity-80"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent z-10" />
-        </div>
-
-        <div className="relative z-20 container mx-auto px-6 h-full flex flex-col justify-end pb-12">
-          <Reveal direction="up">
-            <button
-              onClick={() => navigate(-1)}
-              className="group flex items-center gap-2 text-white/70 hover:text-white transition-all mb-8 uppercase tracking-[0.2em] text-[10px] font-bold"
-            >
-              <ChevronLeft size={16} /> Back to Listings
-            </button>
-            <h1 className={`${fontHead} text-4xl md:text-6xl lg:text-7xl text-white mb-4 drop-shadow-2xl max-w-4xl`}>
-              {accommodation.name}
-            </h1>
-            <div className="flex items-center gap-6 text-cyan-400 font-bold text-sm tracking-widest uppercase">
-              <span className="flex items-center gap-2"><MapPin size={16} className="text-[#c8007b]" /> {accommodation.location || "Sri Lanka"}</span>
-              <span className="w-1 h-1 bg-white/30 rounded-full" />
-              <span className="flex items-center gap-2 text-white">
-                <Star size={16} fill="#c8007b" className="text-[#c8007b]" /> {accommodation.rating || "4.8"} Rated
-              </span>
-            </div>
-          </Reveal>
-        </div>
-      </div>
-
-      <div className="max-w-7xl mx-auto px-6 py-12 lg:py-20">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24">
-
-          {/* --- LEFT COLUMN: GALLERY & CONTENT --- */}
-          <div className="lg:col-span-12 xl:col-span-8 space-y-16">
-            {/* Dynamic Thumbnails Grid */}
+    <div className="bg-white min-h-screen font-sans text-gray-800 pb-16 pt-20 selection:bg-[#c8007b] selection:text-white">
+      <div className="max-w-7xl mx-auto px-4 py-8 md:py-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+          <div className="lg:col-span-7 space-y-4">
             <Reveal direction="up">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {images.map((img, idx) => (
-                  <div
-                    key={idx}
-                    onClick={() => setSelectedImageIndex(idx)}
-                    className={`relative aspect-[4/3] rounded-[30px] overflow-hidden cursor-pointer transition-all duration-500 border-2 ${selectedImageIndex === idx ? 'border-[#c8007b] scale-[0.98]' : 'border-transparent opacity-60 hover:opacity-100'}`}
-                  >
-                    <img src={getImageUrl(img)} alt="" className="w-full h-full object-cover" />
-                  </div>
-                ))}
+              <div className="aspect-[4/3] w-full bg-gray-100 rounded-2xl overflow-hidden border border-gray-100 relative group">
+                <img
+                  src={mainImage || "https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=2070&auto=format&fit=crop"}
+                  alt={accommodation.name}
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
               </div>
             </Reveal>
 
-            {/* Description & Tabs */}
-            <div className="space-y-12">
-              <div className="flex gap-8 border-b border-neutral-100 overflow-x-auto scrollbar-hide">
-                {['Overview', 'Amenities', 'Details'].map((tab) => (
-                  <button
-                    key={tab}
-                    onClick={() => setActiveTab(tab.toLowerCase())}
-                    className={`pb-4 text-[10px] font-bold uppercase tracking-[0.3em] transition-all relative ${activeTab === tab.toLowerCase()
-                        ? 'text-[#c8007b]'
-                        : 'text-neutral-400 hover:text-neutral-900'
-                      }`}
-                  >
-                    {tab}
-                    {activeTab === tab.toLowerCase() && (
-                      <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#c8007b] rounded-full" />
-                    )}
-                  </button>
-                ))}
-              </div>
-
-              <div className="min-h-[300px]">
-                {activeTab === 'overview' && (
-                  <Reveal direction="up" className="space-y-8">
-                    <h3 className={`${fontHead} text-3xl font-bold text-gray-900`}>A Sanctuary of Perfection.</h3>
-                    <p className="text-neutral-500 leading-relaxed text-lg font-light">
-                      {accommodation.description || "Experience comfort and luxury at its finest. Our property offers a unique blend of modern sophistication and island charm."}
-                    </p>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-8 border-t border-neutral-50">
-                      <div className="flex items-center gap-5 group">
-                        <div className="w-12 h-12 rounded-full bg-neutral-50 flex items-center justify-center text-[#c8007b] group-hover:bg-[#c8007b] group-hover:text-white transition-all">
-                          <Wifi size={20} />
-                        </div>
-                        <div>
-                          <p className="font-bold text-gray-900">Complimentary Connectivity</p>
-                          <p className="text-xs text-neutral-400">High-speed wireless internet</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-5 group">
-                        <div className="w-12 h-12 rounded-full bg-neutral-50 flex items-center justify-center text-[#c8007b] group-hover:bg-[#c8007b] group-hover:text-white transition-all">
-                          <Wind size={20} />
-                        </div>
-                        <div>
-                          <p className="font-bold text-gray-900">Climate Excellence</p>
-                          <p className="text-xs text-neutral-400">Full air-conditioning control</p>
-                        </div>
-                      </div>
-                    </div>
-                  </Reveal>
-                )}
-
-                {activeTab === 'amenities' && (
-                  <Reveal direction="up" className="grid grid-cols-2 md:grid-cols-3 gap-6">
-                    {(() => {
-                      const parsedAmenities = safeParseJSON(accommodation.amenities) || [];
-                      const displayAmenities = parsedAmenities.length > 0 
-                        ? parsedAmenities 
-                        : ["Private Pool", "24/7 Butler", "Ocean View", "Mini Bar", "Designer Beds", "Smart Home Tech"];
-                      
-                      return displayAmenities.map((item, idx) => (
-                        <div key={idx} className="flex items-center gap-3 p-5 rounded-[20px] bg-neutral-50/50 border border-neutral-100 group hover:border-[#c8007b]/20 transition-all">
-                          <div className="w-2 h-2 rounded-full bg-[#c8007b]" />
-                          <span className="text-gray-900 font-bold text-sm">{item}</span>
-                        </div>
-                      ));
-                    })()}
-                  </Reveal>
-                )}
-
-                {activeTab === 'details' && (
-                  <Reveal direction="up" className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div className="p-8 rounded-[30px] bg-neutral-900 text-white">
-                      <p className="text-[#c8007b] font-bold text-[10px] tracking-widest uppercase mb-4">Space</p>
-                      <h4 className={`${fontHead} text-3xl mb-4`}>{accommodation.roomType || "Signature Suite"}</h4>
-                      <p className="text-white/60 font-light text-sm italic">Designed for ultimate tranquility.</p>
-                    </div>
-                    <div className="p-8 rounded-[30px] border border-neutral-100">
-                      <p className="text-neutral-400 font-bold text-[10px] tracking-widest uppercase mb-4">Capacity</p>
-                      <h4 className={`${fontHead} text-3xl text-gray-900`}>{accommodation.maxGuests || 2} Preferred Guests</h4>
-                      <div className="mt-8 flex items-center gap-3 text-neutral-400 text-xs">
-                        <Clock size={14} className="text-[#c8007b]" /> Check-in: 2:00 PM • Checkout: 12:00 PM
-                      </div>
-                    </div>
-                  </Reveal>
-                )}
-              </div>
-            </div>
+            {images.length > 1 && (
+              <Reveal direction="up">
+                <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
+                  {images.map((img, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => setSelectedImageIndex(idx)}
+                      className={`relative w-24 h-24 flex-shrink-0 rounded-lg overflow-hidden border-2 transition-all ${selectedImageIndex === idx ? 'border-[#c8007b] ring-2 ring-[#c8007b]/20' : 'border-transparent opacity-70 hover:opacity-100'}`}
+                    >
+                      <img src={getImageUrl(img)} alt="" className="w-full h-full object-cover" />
+                    </button>
+                  ))}
+                </div>
+              </Reveal>
+            )}
           </div>
 
-          {/* --- RIGHT COLUMN: BOOKING BOX --- */}
-          <div className="lg:col-span-12 xl:col-span-4">
-            <Reveal direction="up" className="sticky top-32">
-              <div className="bg-white rounded-[40px] border border-neutral-100 shadow-3xl p-10 space-y-8 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-[#c8007b]/5 rounded-full -mr-16 -mt-16 blur-2xl" />
-
-                <div className="flex justify-between items-end">
-                  <div>
-                    <p className="text-neutral-400 text-[10px] font-bold uppercase tracking-widest mb-1">Starting From</p>
-                    <h4 className="text-4xl font-black text-gray-900">${pricePerNight} <span className="text-sm font-light text-neutral-400">/ night</span></h4>
+          <div className="lg:col-span-5">
+            <Reveal direction="up" className="sticky top-8">
+              <div className="mb-6 border-b border-gray-100 pb-6">
+                <div className="flex justify-between items-start mb-2">
+                  <div className="flex items-center gap-2 text-[#c8007b] text-sm font-semibold">
+                    <MapPin size={16} />
+                    <span className="bg-[#c8007b]/10 text-[#c8007b] text-xs px-2 py-0.5 rounded-full font-semibold">
+                      {accommodation.location || "Sri Lanka"}
+                    </span>
                   </div>
-                  <button className="p-3 rounded-2xl bg-neutral-50 text-neutral-400 hover:text-[#c8007b] transition-all">
+                  <button
+                    onClick={handleShare}
+                    className="p-2 rounded-full hover:bg-gray-100 text-gray-400 hover:text-[#c8007b] transition-colors"
+                    title="Share Accommodation"
+                  >
                     <Share2 size={20} />
                   </button>
                 </div>
 
-                <div className="space-y-6">
+                <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2 leading-tight">
+                  {accommodation.name}
+                </h1>
+
+                <div className="flex items-center gap-4 text-sm">
+                  <div className="flex items-center gap-1 text-yellow-500 font-bold">
+                    <Star size={16} fill="currentColor" />
+                    <span>{accommodation.rating || "4.8"}</span>
+                  </div>
+                  <span className="text-gray-300">|</span>
+                  <span className="text-gray-500">Premium Stay</span>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-2xl border border-gray-100 p-6 space-y-6">
+                <div className="flex justify-between items-end">
+                  <div>
+                    <p className="text-gray-500 text-sm mb-1">Starting From</p>
+                    <h4 className="text-4xl font-black text-gray-900">${pricePerNight} <span className="text-sm font-light text-gray-500">/ night</span></h4>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div className="space-y-3">
-                    <label className="text-[10px] font-bold tracking-widest text-neutral-400 uppercase">Residency Duration</label>
-                    <div className="flex items-center justify-between p-4 bg-neutral-50 rounded-[20px] border border-neutral-100">
-                      <button onClick={() => setSelectedDays(Math.max(1, selectedDays - 1))} className="w-10 h-10 rounded-xl bg-white shadow-sm flex items-center justify-center text-gray-900 hover:bg-[#c8007b] hover:text-white transition-all">
-                        <Minus size={18} />
+                    <label className="text-xs font-semibold tracking-wide text-gray-500 uppercase">Residency Duration</label>
+                    <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-100">
+                      <button onClick={() => setSelectedDays(Math.max(1, selectedDays - 1))} className="w-9 h-9 rounded-lg bg-white shadow-sm flex items-center justify-center text-gray-900 hover:bg-[#c8007b] hover:text-white transition-all">
+                        <Minus size={16} />
                       </button>
-                      <span className="font-bold text-xl">{selectedDays} Nights</span>
-                      <button onClick={() => setSelectedDays(selectedDays + 1)} className="w-10 h-10 rounded-xl bg-white shadow-sm flex items-center justify-center text-gray-900 hover:bg-[#c8007b] hover:text-white transition-all">
-                        <Plus size={18} />
+                      <span className="font-bold text-base">{selectedDays} Nights</span>
+                      <button onClick={() => setSelectedDays(selectedDays + 1)} className="w-9 h-9 rounded-lg bg-white shadow-sm flex items-center justify-center text-gray-900 hover:bg-[#c8007b] hover:text-white transition-all">
+                        <Plus size={16} />
                       </button>
                     </div>
                   </div>
 
                   <div className="space-y-3">
-                    <label className="text-[10px] font-bold tracking-widest text-neutral-400 uppercase">Number of Suites</label>
-                    <div className="flex items-center justify-between p-4 bg-neutral-50 rounded-[20px] border border-neutral-100">
-                      <button onClick={() => setSelectedRooms(Math.max(1, selectedRooms - 1))} className="w-10 h-10 rounded-xl bg-white shadow-sm flex items-center justify-center text-gray-900 hover:bg-[#c8007b] hover:text-white transition-all">
-                        <Minus size={18} />
+                    <label className="text-xs font-semibold tracking-wide text-gray-500 uppercase">Number of Suites</label>
+                    <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-100">
+                      <button onClick={() => setSelectedRooms(Math.max(1, selectedRooms - 1))} className="w-9 h-9 rounded-lg bg-white shadow-sm flex items-center justify-center text-gray-900 hover:bg-[#c8007b] hover:text-white transition-all">
+                        <Minus size={16} />
                       </button>
-                      <span className="font-bold text-xl">{selectedRooms} Rooms</span>
-                      <button onClick={() => setSelectedRooms(selectedRooms + 1)} className="w-10 h-10 rounded-xl bg-white shadow-sm flex items-center justify-center text-gray-900 hover:bg-[#c8007b] hover:text-white transition-all">
-                        <Plus size={18} />
+                      <span className="font-bold text-base">{selectedRooms} Rooms</span>
+                      <button onClick={() => setSelectedRooms(selectedRooms + 1)} className="w-9 h-9 rounded-lg bg-white shadow-sm flex items-center justify-center text-gray-900 hover:bg-[#c8007b] hover:text-white transition-all">
+                        <Plus size={16} />
                       </button>
                     </div>
                   </div>
                 </div>
 
-                <div className="pt-8 border-t border-neutral-50">
-                  <div className="flex justify-between items-center mb-8">
-                    <span className="text-neutral-400 font-bold text-sm">Total Investment</span>
+                <div className="pt-4 border-t border-gray-100">
+                  <div className="flex justify-between items-center mb-6">
+                    <span className="text-gray-500 font-semibold text-sm">Total Investment</span>
                     <span className="text-3xl font-black text-[#c8007b]">${totalPrice.toLocaleString()}</span>
                   </div>
 
                   <button
                     onClick={() => navigate('/contact')}
-                    className="w-full h-20 bg-neutral-900 hover:bg-[#c8007b] text-white rounded-[24px] font-bold uppercase tracking-widest text-xs flex items-center justify-center gap-3 transition-all duration-500 group shadow-2xl shadow-neutral-900/20 active:scale-95"
+                    className="w-full bg-[#c8007b] hover:bg-[#a30065] text-white text-lg font-bold py-4 rounded-xl shadow-lg shadow-[#c8007b]/30 transition-transform active:scale-95 flex items-center justify-center gap-2"
                   >
-                    Book Your Stay <ArrowRight size={18} className="group-hover:translate-x-2 transition-transform" />
+                    Book Your Stay <ArrowRight size={20} />
                   </button>
                 </div>
 
-                <div className="flex items-center justify-center gap-2 pt-2">
-                  <ShieldCheck size={14} className="text-[#c8007b]" />
-                  <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest">Guaranteed Best Rates</span>
+                <div className="flex items-center justify-center gap-2 text-xs text-gray-500">
+                  <ShieldCheck size={14} className="text-green-600" />
+                  <span>Guaranteed Best Rates</span>
                 </div>
               </div>
             </Reveal>
           </div>
         </div>
+
+        <div className="mt-16 md:mt-24 border-t border-gray-100 pt-8">
+          <div className="flex border-b border-gray-200 mb-8 overflow-x-auto">
+            {['Overview', 'Amenities', 'Details'].map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab.toLowerCase())}
+                className={`px-6 py-4 font-bold text-sm uppercase tracking-wide border-b-2 transition-colors whitespace-nowrap ${activeTab === tab.toLowerCase()
+                    ? 'border-[#c8007b] text-[#c8007b]'
+                    : 'border-transparent text-gray-500 hover:text-gray-800'
+                  }`}
+              >
+                {tab}
+              </button>
+            ))}
+          </div>
+
+          <div className="max-w-4xl min-h-[300px]">
+            {activeTab === 'overview' && (
+              <Reveal direction="up" className="space-y-8">
+                <h3 className={`${fontHead} text-3xl font-bold text-gray-900`}>A Sanctuary of Perfection.</h3>
+                <p className="text-gray-600 leading-relaxed text-lg font-light">
+                  {accommodation.description || "Experience comfort and luxury at its finest. Our property offers a unique blend of modern sophistication and island charm."}
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-8 border-t border-gray-100">
+                  <div className="flex items-center gap-5 group">
+                    <div className="w-12 h-12 rounded-full bg-gray-50 flex items-center justify-center text-[#c8007b] group-hover:bg-[#c8007b] group-hover:text-white transition-all">
+                      <Wifi size={20} />
+                    </div>
+                    <div>
+                      <p className="font-bold text-gray-900">Complimentary Connectivity</p>
+                      <p className="text-xs text-gray-500">High-speed wireless internet</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-5 group">
+                    <div className="w-12 h-12 rounded-full bg-gray-50 flex items-center justify-center text-[#c8007b] group-hover:bg-[#c8007b] group-hover:text-white transition-all">
+                      <Wind size={20} />
+                    </div>
+                    <div>
+                      <p className="font-bold text-gray-900">Climate Excellence</p>
+                      <p className="text-xs text-gray-500">Full air-conditioning control</p>
+                    </div>
+                  </div>
+                </div>
+              </Reveal>
+            )}
+
+            {activeTab === 'amenities' && (
+              <Reveal direction="up" className="grid grid-cols-2 md:grid-cols-3 gap-6">
+                {(() => {
+                  const parsedAmenities = safeParseJSON(accommodation.amenities) || [];
+                  const displayAmenities = parsedAmenities.length > 0
+                    ? parsedAmenities
+                    : ["Private Pool", "24/7 Butler", "Ocean View", "Mini Bar", "Designer Beds", "Smart Home Tech"];
+
+                  return displayAmenities.map((item, idx) => (
+                    <div key={idx} className="flex items-center gap-3 p-4 rounded-lg bg-gray-50 border border-gray-100 group hover:border-[#c8007b]/20 transition-all">
+                      <div className="w-2 h-2 rounded-full bg-[#c8007b]" />
+                      <span className="text-gray-900 font-semibold text-sm">{item}</span>
+                    </div>
+                  ));
+                })()}
+              </Reveal>
+            )}
+
+            {activeTab === 'details' && (
+              <Reveal direction="up" className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="p-6 rounded-xl bg-gray-900 text-white">
+                  <p className="text-[#c8007b] font-bold text-xs tracking-wide uppercase mb-3">Space</p>
+                  <h4 className={`${fontHead} text-3xl mb-3`}>{accommodation.roomType || "Signature Suite"}</h4>
+                  <p className="text-white/70 font-light text-sm italic">Designed for ultimate tranquility.</p>
+                </div>
+                <div className="p-6 rounded-xl border border-gray-100">
+                  <p className="text-gray-500 font-bold text-xs tracking-wide uppercase mb-3">Capacity</p>
+                  <h4 className={`${fontHead} text-3xl text-gray-900`}>{accommodation.maxGuests || 2} Preferred Guests</h4>
+                  <div className="mt-6 flex items-center gap-3 text-gray-500 text-xs">
+                    <Clock size={14} className="text-[#c8007b]" /> Check-in: 2:00 PM • Checkout: 12:00 PM
+                  </div>
+                </div>
+              </Reveal>
+            )}
+          </div>
+        </div>
       </div>
-
-
-
     </div>
   );
 };

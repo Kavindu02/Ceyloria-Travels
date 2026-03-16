@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, Calendar, User, Clock, Share2, MessageSquare } from "lucide-react";
+import { Calendar, User, Clock, Share2, MessageSquare } from "lucide-react";
 import { motion } from "framer-motion";
 import { safeParseJSON } from "../utils/jsonParser.js";
 
@@ -60,14 +60,6 @@ const BlogDetail = () => {
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-stone-900/90 mix-blend-multiply"></div>
           <div className="absolute inset-0 bg-black/20"></div>
-        </div>
-
-        {/* Back Navigation */}
-        <div className="absolute top-24 left-6 md:left-16 z-30">
-          <Link to="/blogs" className="inline-flex items-center gap-2 text-white/70 hover:text-white transition-colors group/btn">
-            <ArrowLeft size={20} className="transform group-hover/btn:-translate-x-1 transition-transform" />
-            <span className="text-sm font-bold uppercase tracking-widest">Back to Journal</span>
-          </Link>
         </div>
 
         <div className="absolute bottom-0 left-0 w-full p-6 md:p-16 z-20">

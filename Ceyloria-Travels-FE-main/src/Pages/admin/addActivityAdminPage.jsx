@@ -2,7 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { FaPlus, FaTrash, FaSave, FaArrowLeft, FaCloudUploadAlt } from "react-icons/fa";
+import { FaPlus, FaTrash, FaArrowLeft, FaCloudUploadAlt } from "react-icons/fa";
 import mediaUpload from "../../utils/mediaUpload";
 
 export default function AddActivityAdminPage() {
@@ -121,10 +121,10 @@ export default function AddActivityAdminPage() {
                 onClick={() => navigate("/admin/activities")}
                 className="text-slate-400 hover:text-white flex items-center gap-2 mb-6 transition-colors font-medium"
             >
-                <FaArrowLeft /> Back to activities
+                <FaArrowLeft /> Back to Activities
             </button>
 
-            <div className="bg-slate-900 rounded-3xl p-8 shadow-2xl border border-white/5">
+            <div className="bg-slate-900/50 rounded-2xl p-8 shadow-2xl border border-white/10">
                 <h1 className="text-3xl font-black text-white mb-8 tracking-tight">Create New Activity Collection</h1>
 
                 <form onSubmit={handleSubmit} className="space-y-10">
@@ -132,7 +132,7 @@ export default function AddActivityAdminPage() {
                     {/* --- Activity Overview --- */}
                     <div className="space-y-6 border-b border-white/5 pb-10">
                         <div className="flex items-center gap-3 mb-2">
-                             <div className="w-8 h-8 rounded-lg bg-blue-600/20 text-blue-500 flex items-center justify-center font-bold text-sm">1</div>
+                                <div className="w-8 h-8 rounded-lg bg-teal-500/20 text-teal-400 flex items-center justify-center font-bold text-sm">1</div>
                              <h2 className="text-xl font-bold text-white">General Overview</h2>
                         </div>
                         
@@ -144,7 +144,7 @@ export default function AddActivityAdminPage() {
                                     name="title"
                                     value={formData.title}
                                     onChange={handleChange}
-                                    className="w-full bg-slate-800/50 border border-white/5 rounded-2xl px-5 py-3.5 text-white focus:ring-2 focus:ring-blue-600 outline-none transition-all placeholder:text-slate-600"
+                                    className="w-full bg-slate-800 border border-white/10 rounded-xl px-5 py-3.5 text-white focus:border-teal-500 outline-none transition-all placeholder:text-slate-600"
                                     placeholder="e.g. Whale Watching Adventures"
                                     required
                                 />
@@ -155,7 +155,7 @@ export default function AddActivityAdminPage() {
                                     name="category"
                                     value={formData.category}
                                     onChange={handleChange}
-                                    className="w-full bg-slate-800/50 border border-white/5 rounded-2xl px-5 py-3.5 text-white focus:ring-2 focus:ring-blue-600 outline-none transition-all"
+                                    className="w-full bg-slate-800 border border-white/10 rounded-xl px-5 py-3.5 text-white focus:border-teal-500 outline-none transition-all"
                                     required
                                 >
                                     <option value="Water Sports">Water Sports</option>
@@ -174,7 +174,7 @@ export default function AddActivityAdminPage() {
                                 name="tagline"
                                 value={formData.tagline}
                                 onChange={handleChange}
-                                className="w-full bg-slate-800/50 border border-white/5 rounded-2xl px-5 py-3.5 text-white focus:ring-2 focus:ring-blue-600 outline-none transition-all placeholder:text-slate-600"
+                                className="w-full bg-slate-800 border border-white/10 rounded-xl px-5 py-3.5 text-white focus:border-teal-500 outline-none transition-all placeholder:text-slate-600"
                                 placeholder="A short, catchy phrase about this activity..."
                                 required
                             />
@@ -187,7 +187,7 @@ export default function AddActivityAdminPage() {
                                 value={formData.description}
                                 onChange={handleChange}
                                 rows="4"
-                                className="w-full bg-slate-800/50 border border-white/5 rounded-2xl px-5 py-4 text-white focus:ring-2 focus:ring-blue-600 outline-none transition-all placeholder:text-slate-600 resize-none"
+                                className="w-full bg-slate-800 border border-white/10 rounded-xl px-5 py-4 text-white focus:border-teal-500 outline-none transition-all placeholder:text-slate-600 resize-none"
                                 placeholder="Describe the overall experience..."
                                 required
                             />
@@ -213,7 +213,7 @@ export default function AddActivityAdminPage() {
 
                                 <div className="flex-1">
                                     <label className="cursor-pointer bg-white/5 border border-white/10 hover:bg-white/10 text-white px-5 py-2.5 rounded-xl inline-flex items-center gap-2 transition-all font-bold text-sm">
-                                        <FaCloudUploadAlt className="text-blue-500" /> 
+                                        <FaCloudUploadAlt className="text-teal-400" /> 
                                         <span>{formData.image ? "Replace Image" : "Upload Image"}</span>
                                         <input 
                                             type="file" 
@@ -233,15 +233,15 @@ export default function AddActivityAdminPage() {
                     <div className="space-y-8">
                         <div className="flex justify-between items-center">
                             <div className="flex items-center gap-3">
-                                <div className="w-8 h-8 rounded-lg bg-blue-600/20 text-blue-500 flex items-center justify-center font-bold text-sm">2</div>
+                                <div className="w-8 h-8 rounded-lg bg-teal-500/20 text-teal-400 flex items-center justify-center font-bold text-sm">2</div>
                                 <h2 className="text-xl font-bold text-white">Activity Timeline / Highlights ({items.length})</h2>
                             </div>
                             <button
                                 type="button"
                                 onClick={addItem}
-                                className="text-xs font-black uppercase tracking-widest bg-blue-100 hover:bg-blue-600/20 text-blue-500 px-4 py-2.5 rounded-xl transition-all flex items-center gap-2 border border-blue-100 shadow-lg shadow-blue-600/5 active:scale-95"
+                                className="text-xs bg-slate-800 border border-slate-700 hover:bg-slate-700 text-teal-400 px-4 py-2.5 rounded-lg transition-colors flex items-center gap-2"
                             >
-                                <FaPlus /> Add Highlight
+                                <img src="/admin-add-icon.svg" alt="add" className="w-4 h-4" /> Add Highlight
                             </button>
                         </div>
 
@@ -269,7 +269,7 @@ export default function AddActivityAdminPage() {
                                                     </div>
                                                 )}
                                             </div>
-                                            <label className="block w-full cursor-pointer bg-slate-900/50 border border-white/5 hover:border-blue-500/50 text-slate-500 hover:text-white px-3 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest text-center transition-all">
+                                            <label className="block w-full cursor-pointer bg-slate-900/50 border border-white/10 hover:border-teal-500 text-slate-400 hover:text-white px-3 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest text-center transition-all">
                                                 {uploading ? "Uploading..." : "Upload Photo"}
                                                 <input 
                                                     type="file" 
@@ -289,7 +289,7 @@ export default function AddActivityAdminPage() {
                                                     type="text"
                                                     value={it.title}
                                                     onChange={(e) => handleItemChange(index, "title", e.target.value)}
-                                                    className="w-full bg-transparent border-b border-white/10 pb-2 text-xl font-bold text-white focus:border-blue-600 outline-none transition-all placeholder:text-slate-700"
+                                                    className="w-full bg-transparent border-b border-white/10 pb-2 text-xl font-bold text-white focus:border-teal-500 outline-none transition-all placeholder:text-slate-700"
                                                     placeholder="e.g. Early Morning Departure"
                                                 />
                                             </div>
@@ -299,7 +299,7 @@ export default function AddActivityAdminPage() {
                                                     value={it.description}
                                                     onChange={(e) => handleItemChange(index, "description", e.target.value)}
                                                     rows="3"
-                                                    className="w-full bg-transparent border border-white/5 rounded-xl p-3 text-slate-400 text-sm focus:border-blue-600 outline-none resize-none transition-all placeholder:text-slate-700 leading-relaxed"
+                                                    className="w-full bg-transparent border border-white/10 rounded-xl p-3 text-slate-400 text-sm focus:border-teal-500 outline-none resize-none transition-all placeholder:text-slate-700 leading-relaxed"
                                                     placeholder="Briefly describe this moment or sub-activity..."
                                                 />
                                             </div>
@@ -315,9 +315,9 @@ export default function AddActivityAdminPage() {
                         <button
                             type="submit"
                             disabled={loading || uploading}
-                            className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-10 py-4 rounded-2xl font-black uppercase tracking-widest text-sm hover:shadow-2xl hover:shadow-blue-600/20 transition-all active:scale-95 disabled:opacity-50 flex items-center gap-3"
+                            className="w-full h-14 rounded-xl bg-gradient-to-r from-blue-600 to-teal-500 text-white font-bold text-lg hover:shadow-lg hover:shadow-blue-600/20 transition disabled:opacity-50 flex items-center justify-center gap-2"
                         >
-                            {loading ? "Creating Experience..." : <><FaSave /> Save Activity</>}
+                            {loading ? "Creating Experience..." : <><img src="/admin-add-icon.svg" alt="add" className="w-5 h-5" /> Save Activity</>}
                         </button>
                     </div>
 

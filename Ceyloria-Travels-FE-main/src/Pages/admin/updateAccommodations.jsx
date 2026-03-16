@@ -1,7 +1,23 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { FaArrowLeft } from "react-icons/fa";
 import mediaUpload from "../../utils/mediaUpload"; // Supabase upload helper
+
+const normalizeStringArray = (value) => {
+  if (Array.isArray(value)) return value;
+
+  if (typeof value === "string") {
+    try {
+      const parsed = JSON.parse(value);
+      return Array.isArray(parsed) ? parsed : (value.trim() ? [value] : []);
+    } catch {
+      return value.trim() ? [value] : [];
+    }
+  }
+
+  return [];
+};
 
 export default function UpdateAccommodationAdminPage() {
   const { id } = useParams();
@@ -35,8 +51,8 @@ export default function UpdateAccommodationAdminPage() {
           type: data.type || "",
           location: data.location || "",
           pricePerNight: data.pricePerNight || 0,
-          amenities: data.amenities || [],
-          images: data.images || [],
+          amenities: normalizeStringArray(data.amenities),
+          images: normalizeStringArray(data.images),
         });
       })
       .catch((err) => console.error("Error fetching accommodation:", err))
@@ -51,7 +67,7 @@ export default function UpdateAccommodationAdminPage() {
   // Array field change (amenities, images)
   const handleArrayChange = (field, index, value) => {
     setAcc((prev) => {
-      const updated = [...(prev[field] || [])];
+      const updated = [...normalizeStringArray(prev[field])];
       updated[index] = value;
       return { ...prev, [field]: updated };
     });
@@ -61,7 +77,7 @@ export default function UpdateAccommodationAdminPage() {
   const handleAddArrayField = (field) => {
     setAcc((prev) => ({
       ...prev,
-      [field]: [...(prev[field] || []), ""],
+      [field]: [...normalizeStringArray(prev[field]), ""],
     }));
   };
 
@@ -72,7 +88,7 @@ export default function UpdateAccommodationAdminPage() {
       setUploading(true);
       const url = await mediaUpload(file);
       setAcc((prev) => {
-        const updated = [...(prev[field] || [])];
+        const updated = [...normalizeStringArray(prev[field])];
         updated[index] = url;
         return { ...prev, [field]: updated };
       });
@@ -93,8 +109,8 @@ export default function UpdateAccommodationAdminPage() {
       const payload = {
         ...acc,
         pricePerNight: parseFloat(acc.pricePerNight) || 0,
-        amenities: (acc.amenities || []).filter(a => a && a.trim() !== ""),
-        images: (acc.images || []).filter(img => img && img.trim() !== "")
+        amenities: normalizeStringArray(acc.amenities).filter(a => a && a.trim() !== ""),
+        images: normalizeStringArray(acc.images).filter(img => img && img.trim() !== "")
       };
 
       await axios.put(
@@ -113,99 +129,111 @@ export default function UpdateAccommodationAdminPage() {
   if (loading) return <div className="p-10 text-white">Loading accommodation...</div>;
 
   return (
-    <div className="p-10 text-white">
-      <h1 className="text-2xl font-bold">Edit Accommodation: {acc.name}</h1>
-      <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+    <div className="max-w-4xl mx-auto space-y-8 text-white">
+      <button
+        onClick={() => navigate("/admin/hotels")}
+        className="text-slate-400 hover:text-white flex items-center gap-2 transition-colors font-medium"
+      >
+        <FaArrowLeft /> Back to Hotels
+      </button>
+
+      <div>
+        <h1 className="text-3xl font-bold">Edit Accommodation: {acc.name}</h1>
+        <p className="text-slate-400">Update accommodation details and gallery</p>
+      </div>
+      <form onSubmit={handleSubmit} className="bg-slate-900/50 border border-white/10 rounded-2xl p-8 space-y-6">
         {/* Name */}
-        <div>
-          <label>Name</label>
+        <div className="space-y-2">
+          <label className="text-sm font-semibold text-slate-300">Name</label>
           <input
             type="text"
             value={acc.name}
             onChange={(e) => handleChange("name", e.target.value)}
-            className="px-3 py-2 rounded text-black w-full"
+            className="w-full h-12 rounded-xl bg-slate-800 border border-white/10 px-4 text-white focus:border-teal-500 outline-none transition"
           />
         </div>
 
         {/* Type */}
-        <div>
-          <label>Type</label>
+        <div className="space-y-2">
+          <label className="text-sm font-semibold text-slate-300">Type</label>
           <input
             type="text"
             value={acc.type}
             onChange={(e) => handleChange("type", e.target.value)}
-            className="px-3 py-2 rounded text-black w-full"
+            className="w-full h-12 rounded-xl bg-slate-800 border border-white/10 px-4 text-white focus:border-teal-500 outline-none transition"
           />
         </div>
 
         {/* Location */}
-        <div>
-          <label>Location</label>
+        <div className="space-y-2">
+          <label className="text-sm font-semibold text-slate-300">Location</label>
           <input
             type="text"
             value={acc.location}
             onChange={(e) => handleChange("location", e.target.value)}
-            className="px-3 py-2 rounded text-black w-full"
+            className="w-full h-12 rounded-xl bg-slate-800 border border-white/10 px-4 text-white focus:border-teal-500 outline-none transition"
           />
         </div>
 
         {/* Price per Night */}
-        <div>
-          <label>Price per Night ($)</label>
+        <div className="space-y-2">
+          <label className="text-sm font-semibold text-slate-300">Price per Night ($)</label>
           <input
             type="number"
             value={acc.pricePerNight}
             onChange={(e) => handleChange("pricePerNight", e.target.value)}
-            className="px-3 py-2 rounded text-black w-full"
+            className="w-full h-12 rounded-xl bg-slate-800 border border-white/10 px-4 text-white focus:border-teal-500 outline-none transition"
           />
         </div>
 
         {/* Amenities */}
-        <div>
-          <label>Amenities</label>
-          {(acc.amenities || []).map((item, idx) => (
+        <div className="space-y-2">
+          <label className="text-sm font-semibold text-slate-300">Amenities</label>
+          {normalizeStringArray(acc.amenities).map((item, idx) => (
             <input
               key={idx}
               type="text"
               value={item}
               onChange={(e) => handleArrayChange("amenities", idx, e.target.value)}
-              className="px-3 py-2 rounded text-black w-full mb-1"
+              className="w-full h-12 rounded-xl bg-slate-800 border border-white/10 px-4 text-white focus:border-teal-500 outline-none transition"
             />
           ))}
           <button
             type="button"
             onClick={() => handleAddArrayField("amenities")}
-            className="bg-blue-600 px-2 py-1 rounded mt-1"
+            className="text-xs bg-slate-800 border border-slate-700 hover:bg-slate-700 text-teal-400 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-2"
           >
+            <img src="/admin-add-icon.svg" alt="add" className="w-4 h-4" />
             Add Amenity
           </button>
         </div>
 
         {/* Images */}
-        <div>
-          <label>Images</label>
-          {(acc.images || []).map((img, idx) => (
+        <div className="space-y-2">
+          <label className="text-sm font-semibold text-slate-300">Images</label>
+          {normalizeStringArray(acc.images).map((img, idx) => (
             <div key={idx} className="flex items-center gap-2 mb-2">
               <input
                 type="text"
                 value={img}
                 onChange={(e) => handleArrayChange("images", idx, e.target.value)}
-                className="px-3 py-2 rounded text-black w-full"
+                className="w-full h-12 rounded-xl bg-slate-800 border border-white/10 px-4 text-white focus:border-teal-500 outline-none transition"
                 placeholder="Image URL"
               />
               <input
                 type="file"
                 accept="image/*"
                 onChange={(e) => handleImageUpload("images", idx, e.target.files[0])}
-                className="px-2 py-1 rounded"
+                className="px-2 py-2 rounded-lg text-sm bg-slate-800 border border-slate-700"
               />
             </div>
           ))}
           <button
             type="button"
             onClick={() => handleAddArrayField("images")}
-            className="bg-blue-600 px-2 py-1 rounded mt-1"
+            className="text-xs bg-slate-800 border border-slate-700 hover:bg-slate-700 text-teal-400 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-2"
           >
+            <img src="/admin-add-icon.svg" alt="add" className="w-4 h-4" />
             Add Image
           </button>
           {uploading && <p className="text-yellow-400 mt-1">Uploading image...</p>}
@@ -213,7 +241,7 @@ export default function UpdateAccommodationAdminPage() {
 
         <button
           type="submit"
-          className="px-4 py-2 bg-teal-600 rounded hover:bg-teal-700"
+          className="w-full h-14 rounded-xl bg-gradient-to-r from-blue-600 to-teal-500 text-white font-bold text-lg hover:shadow-lg hover:shadow-blue-600/20 transition disabled:opacity-50 flex items-center justify-center gap-2"
         >
           Update Accommodation
         </button>

@@ -49,9 +49,9 @@ export default function ActivityAdminPage() {
                 </div>
                 <Link
                     to="/admin/add-activity"
-                    className="flex items-center gap-2 px-6 py-3 bg-teal-600 hover:bg-teal-500 text-white font-bold rounded-xl transition"
+                    className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-teal-500 text-white font-bold rounded-xl hover:shadow-lg hover:shadow-blue-600/20 transition"
                 >
-                    <RiAddLine className="text-xl" />
+                    <img src="/admin-add-icon.svg" alt="add" className="w-5 h-5" />
                     Add New Activity
                 </Link>
             </div>
@@ -92,7 +92,7 @@ export default function ActivityAdminPage() {
                                             <div className="flex justify-end gap-2">
                                                 <Link
                                                     to={`/admin/update-activity/${activity.id}`}
-                                                    className="p-2 bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 rounded-lg transition"
+                                                    className="p-2 bg-blue-600/20 hover:bg-blue-600 text-blue-400 hover:text-white rounded-lg transition"
                                                 >
                                                     <RiEdit2Line />
                                                 </Link>

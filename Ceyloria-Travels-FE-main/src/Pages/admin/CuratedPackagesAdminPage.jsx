@@ -76,7 +76,7 @@ export default function CuratedPackagesAdminPage() {
           onClick={handleSave}
           disabled={saving}
           className={`px-8 py-3 rounded-xl font-bold transition-all ${
-            saving ? "bg-slate-700 cursor-not-allowed" : "bg-teal-600 hover:bg-teal-700 shadow-lg shadow-teal-600/20"
+            saving ? "bg-slate-700 cursor-not-allowed" : "bg-gradient-to-r from-blue-600 to-teal-500 hover:shadow-lg hover:shadow-blue-600/20"
           }`}
         >
           {saving ? "Saving..." : "Save Selection"}
@@ -95,7 +95,7 @@ export default function CuratedPackagesAdminPage() {
               onClick={() => toggleSelection(pkg.id)}
               className={`relative cursor-pointer rounded-2xl border-2 transition-all p-4 ${
                 isSelected 
-                  ? "bg-teal-600/10 border-teal-500 shadow-xl" 
+                  ? "bg-teal-500/10 border-teal-500 shadow-xl" 
                   : "bg-slate-900 border-white/10 hover:border-white/30"
               }`}
             >

@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { RiArticleLine, RiArrowLeftLine } from "react-icons/ri";
+import { FaArrowLeft } from "react-icons/fa";
 import { FaCloudUploadAlt, FaPlus, FaTrash } from "react-icons/fa";
 import mediaUpload from "../../utils/mediaUpload";
 
@@ -137,17 +137,16 @@ export default function AddBlogAdminPage() {
 
     return (
         <div className="max-w-4xl mx-auto space-y-8">
-            <div className="flex items-center gap-4">
-                <Link
-                    to="/admin/blogs"
-                    className="p-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl transition"
-                >
-                    <RiArrowLeftLine className="text-xl" />
-                </Link>
-                <div>
-                    <h1 className="text-3xl font-bold text-white">Add New Blog</h1>
-                    <p className="text-slate-400">Share a new adventure with your readers</p>
-                </div>
+            <button
+                onClick={() => navigate("/admin/blogs")}
+                className="text-slate-400 hover:text-white flex items-center gap-2 transition-colors font-medium"
+            >
+                <FaArrowLeft /> Back to Blogs
+            </button>
+
+            <div>
+                <h1 className="text-3xl font-bold text-white">Add New Blog</h1>
+                <p className="text-slate-400">Share a new adventure with your readers</p>
             </div>
 
             <form onSubmit={handleSubmit} className="bg-slate-900/50 border border-white/10 rounded-2xl p-8 space-y-6">
@@ -222,7 +221,7 @@ export default function AddBlogAdminPage() {
                                 disabled={formData.images.length >= 3}
                                 className="text-xs bg-slate-800 border border-slate-700 hover:bg-slate-700 text-teal-400 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
-                                <FaPlus /> Add Image
+                                <img src="/admin-add-icon.svg" alt="add" className="w-4 h-4" /> Add Image
                             </button>
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
@@ -326,9 +325,9 @@ export default function AddBlogAdminPage() {
                 <button
                     type="submit"
                     disabled={loading || uploading || !formData.content}
-                    className="w-full h-14 rounded-xl bg-gradient-to-r from-teal-500 to-blue-600 text-white font-bold text-lg hover:shadow-lg hover:shadow-teal-500/20 transition disabled:opacity-50"
+                    className="w-full h-14 rounded-xl bg-gradient-to-r from-blue-600 to-teal-500 text-white font-bold text-lg hover:shadow-lg hover:shadow-blue-600/20 transition disabled:opacity-50 flex items-center justify-center gap-2"
                 >
-                    {loading ? "Creating Post..." : "Publish Blog Post"}
+                    {loading ? "Creating Post..." : <><img src="/admin-add-icon.svg" alt="add" className="w-5 h-5" /> Publish Blog Post</>}
                 </button>
             </form>
         </div>

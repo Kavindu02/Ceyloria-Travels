@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { FaArrowLeft } from "react-icons/fa";
 import mediaUpload from "../../utils/mediaUpload";
 
 
@@ -78,6 +79,13 @@ export default function AddPackageAdminPage() {
 
   return (
     <div className="max-w-4xl mx-auto p-6">
+      <button
+        onClick={() => navigate("/admin/packages")}
+        className="text-slate-400 hover:text-white flex items-center gap-2 mb-6 transition-colors font-medium"
+      >
+        <FaArrowLeft /> Back to Packages
+      </button>
+
       <div className="bg-slate-900/50 border border-white/10 rounded-2xl p-8 space-y-6">
         <div>
           <h1 className="text-3xl font-bold text-white">Add New Travel Package</h1>
@@ -181,7 +189,7 @@ export default function AddPackageAdminPage() {
               className="w-full h-12 rounded-xl bg-slate-800 border border-white/10 px-4 text-white placeholder:text-slate-500 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none transition"
             />
           ))}
-          <button type="button" onClick={() => handleAddArrayField("citiesCovered")} className="text-xs bg-slate-800 border border-white/10 hover:bg-slate-700 text-teal-400 px-3 py-2 rounded-lg transition-colors">Add City</button>
+          <button type="button" onClick={() => handleAddArrayField("citiesCovered")} className="text-xs bg-slate-800 border border-white/10 hover:bg-slate-700 text-teal-400 px-3 py-2 rounded-lg transition-colors flex items-center gap-2"><img src="/admin-add-icon.svg" alt="add" className="w-4 h-4" />Add City</button>
         </div>
 
         {/* Highlights */}
@@ -196,7 +204,7 @@ export default function AddPackageAdminPage() {
               className="w-full h-12 rounded-xl bg-slate-800 border border-white/10 px-4 text-white placeholder:text-slate-500 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none transition"
             />
           ))}
-          <button type="button" onClick={() => handleAddArrayField("highlights")} className="text-xs bg-slate-800 border border-white/10 hover:bg-slate-700 text-teal-400 px-3 py-2 rounded-lg transition-colors">Add Highlight</button>
+          <button type="button" onClick={() => handleAddArrayField("highlights")} className="text-xs bg-slate-800 border border-white/10 hover:bg-slate-700 text-teal-400 px-3 py-2 rounded-lg transition-colors flex items-center gap-2"><img src="/admin-add-icon.svg" alt="add" className="w-4 h-4" />Add Highlight</button>
         </div>
 
         {/* Inclusions */}
@@ -211,7 +219,7 @@ export default function AddPackageAdminPage() {
               className="w-full h-12 rounded-xl bg-slate-800 border border-white/10 px-4 text-white placeholder:text-slate-500 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none transition"
             />
           ))}
-          <button type="button" onClick={() => handleAddArrayField("inclusions")} className="text-xs bg-slate-800 border border-white/10 hover:bg-slate-700 text-teal-400 px-3 py-2 rounded-lg transition-colors">Add Inclusion</button>
+          <button type="button" onClick={() => handleAddArrayField("inclusions")} className="text-xs bg-slate-800 border border-white/10 hover:bg-slate-700 text-teal-400 px-3 py-2 rounded-lg transition-colors flex items-center gap-2"><img src="/admin-add-icon.svg" alt="add" className="w-4 h-4" />Add Inclusion</button>
         </div>
 
         {/* Exclusions */}
@@ -226,7 +234,7 @@ export default function AddPackageAdminPage() {
               className="w-full h-12 rounded-xl bg-slate-800 border border-white/10 px-4 text-white placeholder:text-slate-500 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none transition"
             />
           ))}
-          <button type="button" onClick={() => handleAddArrayField("exclusions")} className="text-xs bg-slate-800 border border-white/10 hover:bg-slate-700 text-teal-400 px-3 py-2 rounded-lg transition-colors">Add Exclusion</button>
+          <button type="button" onClick={() => handleAddArrayField("exclusions")} className="text-xs bg-slate-800 border border-white/10 hover:bg-slate-700 text-teal-400 px-3 py-2 rounded-lg transition-colors flex items-center gap-2"><img src="/admin-add-icon.svg" alt="add" className="w-4 h-4" />Add Exclusion</button>
         </div>
 
         {/* Images */}
@@ -246,7 +254,7 @@ export default function AddPackageAdminPage() {
           </div>
         </div>
 
-          <button type="submit" className="w-full h-12 bg-teal-600 hover:bg-teal-700 text-white font-semibold rounded-xl transition-colors">Add Package</button>
+          <button type="submit" className="w-full h-14 rounded-xl bg-gradient-to-r from-blue-600 to-teal-500 text-white font-bold text-lg hover:shadow-lg hover:shadow-blue-600/20 transition flex items-center justify-center gap-2"><img src="/admin-add-icon.svg" alt="add" className="w-5 h-5" />Add Package</button>
         </form>
       </div>
     </div>

@@ -70,26 +70,26 @@ export default function DestinationAdminPage() {
         </div>
         <button
           onClick={() => navigate("/admin/add-destination-category")}
-          className="bg-gradient-to-r from-green-600 to-green-500 text-white px-6 py-3 rounded-lg hover:from-green-700 hover:to-green-600 flex items-center gap-2 shadow-lg hover:shadow-xl transition-all duration-200 font-semibold"
+          className="bg-gradient-to-r from-blue-600 to-teal-500 text-white px-6 py-3 rounded-xl hover:shadow-lg hover:shadow-blue-600/20 flex items-center gap-2 transition"
         >
-          <FaMapMarkedAlt className="text-lg" /> Add New Category
+          <img src="/admin-add-icon.svg" alt="add" className="w-5 h-5" /> Add New Category
         </button>
       </div>
 
       {!categories.length ? (
-        <div className="bg-slate-800 rounded-lg p-12 text-center">
+        <div className="bg-slate-900/50 border border-white/10 rounded-2xl p-12 text-center">
           <p className="text-white text-xl mb-4">No destination categories found.</p>
           <button
             onClick={() => navigate("/admin/add-destination-category")}
-            className="bg-gradient-to-r from-blue-600 to-blue-600 text-white px-8 py-3 rounded-lg hover:from-blue-600 hover:to-blue-600 flex items-center gap-2 shadow-lg hover:shadow-xl transition-all duration-200 font-semibold mx-auto"
+            className="bg-gradient-to-r from-blue-600 to-teal-500 text-white px-8 py-3 rounded-xl hover:shadow-lg hover:shadow-blue-600/20 flex items-center gap-2 transition mx-auto"
           >
-            <FaMapMarkedAlt className="text-lg" /> Add First Category
+            <img src="/admin-add-icon.svg" alt="add" className="w-5 h-5" /> Add First Category
           </button>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {categories.map((cat) => (
-                <div key={cat.id} className="bg-slate-800 rounded-2xl overflow-hidden border border-slate-700 flex flex-col">
+                <div key={cat.id} className="bg-slate-900/50 rounded-2xl overflow-hidden border border-white/10 flex flex-col">
                     <div className="h-48 overflow-hidden relative group">
                         <img src={cat.image} alt={cat.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
                         <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent" />
@@ -104,10 +104,10 @@ export default function DestinationAdminPage() {
                             <span className="bg-slate-700 px-2 py-1 rounded">{(safeParseJSON(cat.destinations) || []).length} Destinations</span>
                         </div>
                     </div>
-                    <div className="p-4 border-t border-slate-700 flex justify-end gap-2 bg-slate-850">
+                    <div className="p-4 border-t border-white/10 flex justify-end gap-2 bg-slate-900/40">
                         <Link
                             to={`/admin/update-destination-category/${cat.id}`}
-                            className="p-2 bg-blue-600/20 text-blue-600 rounded-lg hover:bg-blue-600 hover:text-white transition-colors"
+                        className="p-2 bg-blue-600/20 text-blue-400 rounded-lg hover:bg-blue-600 hover:text-white transition-colors"
                         >
                             <FaEdit />
                         </Link>

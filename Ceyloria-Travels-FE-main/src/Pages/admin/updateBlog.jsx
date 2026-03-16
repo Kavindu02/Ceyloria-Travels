@@ -1,14 +1,27 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { RiArticleLine, RiArrowLeftLine, RiSaveLine } from "react-icons/ri";
-import { FaCloudUploadAlt, FaPlus, FaTrash } from "react-icons/fa";
+import { RiSaveLine } from "react-icons/ri";
+import { FaArrowLeft, FaCloudUploadAlt, FaPlus, FaTrash } from "react-icons/fa";
 import mediaUpload from "../../utils/mediaUpload";
 
 // Import React Quill
 import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css"; // standard CSS for Quill
+
+const normalizeImages = (images) => {
+    if (Array.isArray(images)) return images;
+    if (typeof images === "string") {
+        try {
+            const parsed = JSON.parse(images);
+            return Array.isArray(parsed) ? parsed : [];
+        } catch {
+            return images.trim() ? [images] : [];
+        }
+    }
+    return [];
+};
 
 export default function UpdateBlog() {
     const { id } = useParams();
@@ -54,7 +67,11 @@ export default function UpdateBlog() {
         const fetchBlog = async () => {
             try {
                 const res = await axios.get(import.meta.env.VITE_BACKEND_URL + `/blogs/${id}`);
-                setFormData(res.data);
+                setFormData((prev) => ({
+                    ...prev,
+                    ...res.data,
+                    images: normalizeImages(res.data?.images),
+                }));
             } catch (err) {
                 console.error("Error fetching blog:", err);
                 toast.error("Failed to load blog data");
@@ -91,9 +108,12 @@ export default function UpdateBlog() {
             if (type === 'main') {
                 setFormData(prev => ({ ...prev, image: url }));
             } else if (type === 'extra' && index !== null) {
-                const newImages = [...formData.images];
-                newImages[index] = url;
-                setFormData(prev => ({ ...prev, images: newImages }));
+                setFormData(prev => {
+                    const currentImages = normalizeImages(prev.images);
+                    const newImages = [...currentImages];
+                    newImages[index] = url;
+                    return { ...prev, images: newImages };
+                });
             }
             
             toast.success("Image uploaded!", { id: toastId });
@@ -106,16 +126,16 @@ export default function UpdateBlog() {
     };
 
     const addExtraImageField = () => {
-        if (!formData.images) formData.images = [];
-        if (formData.images.length >= 3) {
+        const currentImages = normalizeImages(formData.images);
+        if (currentImages.length >= 3) {
             toast.error("Maximum 3 extra images allowed.");
             return;
         }
-        setFormData(prev => ({ ...prev, images: [...prev.images, ""] }));
+        setFormData(prev => ({ ...prev, images: [...normalizeImages(prev.images), ""] }));
     };
 
     const removeExtraImageField = (index) => {
-        const newImages = formData.images.filter((_, i) => i !== index);
+        const newImages = normalizeImages(formData.images).filter((_, i) => i !== index);
         setFormData(prev => ({ ...prev, images: newImages }));
     };
 
@@ -128,7 +148,7 @@ export default function UpdateBlog() {
             
             const payload = {
                 ...formData,
-                images: (formData.images || []).filter(img => img && img.trim() !== "")
+                images: normalizeImages(formData.images).filter(img => typeof img === "string" && img.trim() !== "")
             };
             
             await axios.put(import.meta.env.VITE_BACKEND_URL + `/blogs/${id}`, payload, {
@@ -148,17 +168,16 @@ export default function UpdateBlog() {
 
     return (
         <div className="max-w-4xl mx-auto space-y-8">
-            <div className="flex items-center gap-4">
-                <Link
-                    to="/admin/blogs"
-                    className="p-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl transition"
-                >
-                    <RiArrowLeftLine className="text-xl" />
-                </Link>
-                <div>
-                    <h1 className="text-3xl font-bold text-white">Update Blog</h1>
-                    <p className="text-slate-400">Edit your travel journal entry</p>
-                </div>
+            <button
+                onClick={() => navigate("/admin/blogs")}
+                className="text-slate-400 hover:text-white flex items-center gap-2 transition-colors font-medium"
+            >
+                <FaArrowLeft /> Back to Blogs
+            </button>
+
+            <div>
+                <h1 className="text-3xl font-bold text-white">Update Blog</h1>
+                <p className="text-slate-400">Edit your travel journal entry</p>
             </div>
 
             <form onSubmit={handleSubmit} className="bg-slate-900/50 border border-white/10 rounded-2xl p-8 space-y-6">
@@ -228,14 +247,14 @@ export default function UpdateBlog() {
                             <button
                                 type="button"
                                 onClick={addExtraImageField}
-                                disabled={formData.images?.length >= 3}
+                                disabled={normalizeImages(formData.images).length >= 3}
                                 className="text-xs bg-slate-800 border border-slate-700 hover:bg-slate-700 text-teal-400 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
-                                <FaPlus /> Add Image
+                                <img src="/admin-add-icon.svg" alt="add" className="w-4 h-4" /> Add Image
                             </button>
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                             {(formData.images || []).map((img, index) => (
+                             {normalizeImages(formData.images).map((img, index) => (
                                 <div key={index} className="bg-slate-800/50 p-4 rounded-xl border border-slate-700/50 relative group flex flex-col items-center justify-center gap-3">
                                     <button
                                         type="button"
@@ -336,7 +355,7 @@ export default function UpdateBlog() {
                     disabled={updating || uploading || !formData.content}
                     className="w-full h-14 rounded-xl bg-gradient-to-r from-blue-600 to-teal-500 text-white font-bold text-lg hover:shadow-lg hover:shadow-blue-600/20 transition disabled:opacity-50 flex items-center justify-center gap-2"
                 >
-                    <RiSaveLine className="text-xl" />
+                    
                     {updating ? "Updating..." : "Save Changes"}
                 </button>
             </form>

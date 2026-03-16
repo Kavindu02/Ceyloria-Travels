@@ -70,21 +70,21 @@ export default function AccommodationsAdminPage() {
         </div>
         <button
           onClick={() => navigate("/admin/add-accommodation")}
-          className="bg-gradient-to-r from-green-600 to-green-500 text-white px-6 py-3 rounded-lg hover:from-green-700 hover:to-green-600 flex items-center gap-2 shadow-lg hover:shadow-xl transition-all duration-200 font-semibold"
+          className="bg-gradient-to-r from-blue-600 to-teal-500 text-white px-6 py-3 rounded-xl hover:shadow-lg hover:shadow-blue-600/20 flex items-center gap-2 transition"
         >
-          <FaEdit className="text-lg" /> Add New Hotel
+          <img src="/admin-add-icon.svg" alt="add" className="w-5 h-5" /> Add New Hotel
         </button>
       </div>
 
       {!accommodations.length ? (
-        <div className="bg-slate-800 rounded-lg p-12 text-center">
+        <div className="bg-slate-900/50 border border-white/10 rounded-2xl p-12 text-center">
           <p className="text-white text-xl mb-4">No accommodations found.</p>
           <p className="text-gray-400 mb-6">Get started by adding your first hotel.</p>
           <button
             onClick={() => navigate("/admin/add-accommodation")}
-            className="bg-[#cb007e] text-white px-8 py-3 rounded-lg hover:bg-[#a00063] flex items-center gap-2 shadow-lg hover:shadow-xl transition-all duration-200 font-semibold mx-auto"
+            className="bg-gradient-to-r from-blue-600 to-teal-500 text-white px-8 py-3 rounded-xl hover:shadow-lg hover:shadow-blue-600/20 flex items-center gap-2 transition mx-auto"
           >
-            <FaEdit className="text-lg" /> Add Your First Hotel
+            <img src="/admin-add-icon.svg" alt="add" className="w-5 h-5" /> Add Your First Hotel
           </button>
         </div>
       ) : (
@@ -92,7 +92,7 @@ export default function AccommodationsAdminPage() {
             {accommodations.map((acc) => {
                 const parsedImages = (safeParseJSON(acc.images) || []).filter(i => i && i.trim() !== "");
                 return (
-                <div key={acc.id} className="bg-slate-800 rounded-2xl overflow-hidden border border-slate-700 flex flex-col">
+                <div key={acc.id} className="bg-slate-900/50 rounded-2xl overflow-hidden border border-white/10 flex flex-col">
                     <div className="h-48 overflow-hidden relative group">
                         <img src={parsedImages[0] || 'https://via.placeholder.com/400x300?text=No+Image'} alt={acc.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
                         <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent" />
@@ -105,13 +105,13 @@ export default function AccommodationsAdminPage() {
                         <p className="text-sm text-slate-400 line-clamp-2">{acc.description ?? "No description available."}</p>
                         <div className="mt-4 flex items-center gap-2 text-xs text-slate-500">
                             <span className="bg-slate-700 px-2 py-1 rounded">{acc.location ?? "N/A"}</span>
-                            <span className="bg-[#cb007e]/20 text-[#cb007e] px-2 py-1 rounded border border-[#cb007e]/30 font-semibold">${(acc.pricePerNight ?? 0).toLocaleString()} / night</span>
+                          <span className="bg-teal-500/10 text-teal-400 px-2 py-1 rounded border border-teal-500/30 font-semibold">${(acc.pricePerNight ?? 0).toLocaleString()} / night</span>
                         </div>
                     </div>
-                    <div className="p-4 border-t border-slate-700 flex justify-end gap-2 bg-slate-850">
+                      <div className="p-4 border-t border-white/10 flex justify-end gap-2 bg-slate-900/40">
                         <Link
                             to={`/admin/update-accommodation/${acc.id}`}
-                            className="p-2 bg-[#cb007e]/20 text-[#cb007e] rounded-lg hover:bg-[#cb007e] hover:text-white transition-colors"
+                          className="p-2 bg-blue-600/20 text-blue-400 rounded-lg hover:bg-blue-600 hover:text-white transition-colors"
                         >
                             <FaEdit />
                         </Link>
