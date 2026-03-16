@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   MapPin,
@@ -48,11 +48,22 @@ const getImageUrl = (imagePath) => {
 const PackageOverviewPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const bookingSectionRef = useRef(null);
   const [package_, setPackage] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("overview");
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [recommendedPackages, setRecommendedPackages] = useState([]);
+  const [bookingForm, setBookingForm] = useState({
+    packageName: "",
+    name: "",
+    contactNumber: "",
+    date: "",
+    adults: 1,
+    kids: 0,
+    infants: 0,
+  });
+  const [isSubmittingBooking, setIsSubmittingBooking] = useState(false);
 
   useEffect(() => {
     const fetchPackage = async () => {
@@ -71,6 +82,15 @@ const PackageOverviewPage = () => {
     };
     if (id) fetchPackage();
   }, [id]);
+
+  useEffect(() => {
+    if (package_?.title) {
+      setBookingForm((prev) => ({
+        ...prev,
+        packageName: package_.title,
+      }));
+    }
+  }, [package_?.title]);
 
   useEffect(() => {
     const fetchRecommended = async () => {
@@ -111,6 +131,63 @@ const PackageOverviewPage = () => {
 
   const itinerary = safeParseJSON(package_.itinerary);
   const highlights = safeParseJSON(package_.highlights);
+
+  const handleBookingChange = (field, value) => {
+    setBookingForm((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleScrollToBookingForm = () => {
+    bookingSectionRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
+
+  const handleBookingSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmittingBooking(true);
+
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/api/package-booking`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            packageName: bookingForm.packageName || package_?.title || "",
+            name: bookingForm.name,
+            contactNumber: bookingForm.contactNumber,
+            date: bookingForm.date,
+            adults: Number(bookingForm.adults) || 0,
+            kids: Number(bookingForm.kids) || 0,
+            infants: Number(bookingForm.infants) || 0,
+          }),
+        },
+      );
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data?.message || "Failed to send package inquiry");
+      }
+
+      alert("Package inquiry sent successfully!");
+      setBookingForm((prev) => ({
+        packageName: package_?.title || prev.packageName,
+        name: "",
+        contactNumber: "",
+        date: "",
+        adults: 1,
+        kids: 0,
+        infants: 0,
+      }));
+    } catch (error) {
+      alert(error.message || "Failed to send package inquiry");
+    } finally {
+      setIsSubmittingBooking(false);
+    }
+  };
 
   return (
     <div className="bg-white min-h-screen font-sans text-gray-800 pb-16 pt-20">
@@ -252,7 +329,10 @@ const PackageOverviewPage = () => {
                 </div>
 
                 <div className="flex flex-col gap-3">
-                  <button className="w-full bg-[#cc007e] hover:bg-[#a30065] text-white text-lg font-bold py-4 rounded-xl shadow-lg shadow-[#cc007e]/30 transition-transform active:scale-95 flex items-center justify-center gap-2">
+                  <button
+                    onClick={handleScrollToBookingForm}
+                    className="w-full bg-[#cc007e] hover:bg-[#a30065] text-white text-lg font-bold py-4 rounded-xl shadow-lg shadow-[#cc007e]/30 transition-transform active:scale-95 flex items-center justify-center gap-2"
+                  >
                     Book Now <ArrowRight size={20} />
                   </button>
                 </div>
@@ -267,7 +347,10 @@ const PackageOverviewPage = () => {
         </div>
 
         {/* --- BOTTOM SECTION: TABS --- */}
-        <div className="mt-16 md:mt-24 border-t border-gray-100 pt-8">
+        <div
+          ref={bookingSectionRef}
+          className="mt-16 md:mt-24 border-t border-gray-100 pt-8"
+        >
           {/* Tabs Header */}
           <div className="flex border-b border-gray-200 mb-8 overflow-x-auto">
             {["Overview", "Itinerary", "Inclusions", "Reviews"].map((tab) => (
@@ -285,112 +368,235 @@ const PackageOverviewPage = () => {
             ))}
           </div>
 
-          {/* Tab Content */}
-          <div className="max-w-4xl">
-            {activeTab === "overview" && (
-              <div className="space-y-6 animate-fadeIn">
-                <h3 className="text-2xl font-bold text-gray-900">
-                  About this Package
-                </h3>
-                <p className="text-gray-600 leading-relaxed text-lg">
-                  {package_.description ||
-                    package_.shortDescription ||
-                    "Experience the best of Sri Lanka with this carefully curated package."}
-                </p>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            {/* Tab Content */}
+            <div className="lg:col-span-8 max-w-4xl">
+              {activeTab === "overview" && (
+                <div className="space-y-6 animate-fadeIn">
+                  <h3 className="text-2xl font-bold text-gray-900">
+                    About this Package
+                  </h3>
+                  <p className="text-gray-600 leading-relaxed text-lg">
+                    {package_.description ||
+                      package_.shortDescription ||
+                      "Experience the best of Sri Lanka with this carefully curated package."}
+                  </p>
 
-                <div className="mt-4">
-                  <h4 className="font-semibold text-gray-900 mb-2">
-                    Covered Cities
-                  </h4>
-                  <div className="flex flex-wrap gap-2">
-                    {cities.length > 0 ? (
-                      cities.map((c, idx) => (
-                        <span
-                          key={idx}
-                          className="bg-[#cc007e]/10 text-[#cc007e] px-3 py-1 rounded-full text-sm font-semibold"
-                        >
-                          {c}
-                        </span>
-                      ))
-                    ) : (
-                      <span className="text-gray-500">Sri Lanka</span>
-                    )}
+                  <div className="mt-4">
+                    <h4 className="font-semibold text-gray-900 mb-2">
+                      Covered Cities
+                    </h4>
+                    <div className="flex flex-wrap gap-2">
+                      {cities.length > 0 ? (
+                        cities.map((c, idx) => (
+                          <span
+                            key={idx}
+                            className="bg-[#cc007e]/10 text-[#cc007e] px-3 py-1 rounded-full text-sm font-semibold"
+                          >
+                            {c}
+                          </span>
+                        ))
+                      ) : (
+                        <span className="text-gray-500">Sri Lanka</span>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="bg-[#cc007e]/5 p-6 rounded-xl border border-[#cc007e]/20">
+                    <h4 className="font-bold text-[#cc007e] mb-2 flex items-center gap-2">
+                      <Info size={18} /> Why travelers love this
+                    </h4>
+                    <ul className="space-y-2 text-[#cc007e]/80">
+                      <li>
+                        • Verified local guides ensuring authentic experiences
+                      </li>
+                      <li>
+                        • Hassle-free transportation in air-conditioned vehicles
+                      </li>
+                      <li>• Hand-picked accommodation rated 4 stars and above</li>
+                    </ul>
                   </div>
                 </div>
+              )}
 
-                <div className="bg-[#cc007e]/5 p-6 rounded-xl border border-[#cc007e]/20">
-                  <h4 className="font-bold text-[#cc007e] mb-2 flex items-center gap-2">
-                    <Info size={18} /> Why travelers love this
-                  </h4>
-                  <ul className="space-y-2 text-[#cc007e]/80">
-                    <li>
-                      • Verified local guides ensuring authentic experiences
-                    </li>
-                    <li>
-                      • Hassle-free transportation in air-conditioned vehicles
-                    </li>
-                    <li>• Hand-picked accommodation rated 4 stars and above</li>
-                  </ul>
-                </div>
-              </div>
-            )}
-
-            {activeTab === "itinerary" && (
-              <div className="space-y-8 animate-fadeIn">
-                <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                  Day by Day Schedule
-                </h3>
-                {itinerary?.map((day, idx) => (
-                  <div key={idx} className="flex gap-4 md:gap-6 group">
-                    <div className="flex flex-col items-center">
-                      <div className="w-10 h-10 rounded-full bg-[#cc007e]/10 text-[#cc007e] font-bold flex items-center justify-center shrink-0 group-hover:bg-[#cc007e] group-hover:text-white transition-colors">
-                        {idx + 1}
+              {activeTab === "itinerary" && (
+                <div className="space-y-8 animate-fadeIn">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                    Day by Day Schedule
+                  </h3>
+                  {itinerary?.map((day, idx) => (
+                    <div key={idx} className="flex gap-4 md:gap-6 group">
+                      <div className="flex flex-col items-center">
+                        <div className="w-10 h-10 rounded-full bg-[#cc007e]/10 text-[#cc007e] font-bold flex items-center justify-center shrink-0 group-hover:bg-[#cc007e] group-hover:text-white transition-colors">
+                          {idx + 1}
+                        </div>
+                        <div className="h-full w-0.5 bg-gray-100 my-2 group-last:hidden"></div>
                       </div>
-                      <div className="h-full w-0.5 bg-gray-100 my-2 group-last:hidden"></div>
-                    </div>
-                    <div className="pb-8 group-last:pb-0">
-                      <h4 className="text-lg font-bold text-gray-900 mb-2">
-                        {day.title}
-                      </h4>
-                      <p className="text-gray-600 leading-relaxed">
-                        {day.description}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {activeTab === "inclusions" && (
-              <div className="animate-fadeIn">
-                <h3 className="text-2xl font-bold text-gray-900 mb-6">
-                  What's Included
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {highlights?.map((item, idx) => (
-                    <div
-                      key={idx}
-                      className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg border border-gray-100"
-                    >
-                      <Check className="text-green-500 shrink-0" size={20} />
-                      <span className="text-gray-700 font-medium">{item}</span>
+                      <div className="pb-8 group-last:pb-0">
+                        <h4 className="text-lg font-bold text-gray-900 mb-2">
+                          {day.title}
+                        </h4>
+                        <p className="text-gray-600 leading-relaxed">
+                          {day.description}
+                        </p>
+                      </div>
                     </div>
                   ))}
                 </div>
-              </div>
-            )}
+              )}
 
-            {activeTab === "reviews" && (
-              <div className="animate-fadeIn text-center py-12 bg-gray-50 rounded-2xl border border-dashed border-gray-300">
-                <Star size={48} className="mx-auto text-gray-300 mb-4" />
-                <h3 className="text-lg font-medium text-gray-900">
-                  No reviews yet
-                </h3>
-                <p className="text-gray-500">
-                  Be the first to book this exclusive package!
+              {activeTab === "inclusions" && (
+                <div className="animate-fadeIn">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-6">
+                    What's Included
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {highlights?.map((item, idx) => (
+                      <div
+                        key={idx}
+                        className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg border border-gray-100"
+                      >
+                        <Check className="text-green-500 shrink-0" size={20} />
+                        <span className="text-gray-700 font-medium">{item}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {activeTab === "reviews" && (
+                <div className="animate-fadeIn text-center py-12 bg-gray-50 rounded-2xl border border-dashed border-gray-300">
+                  <Star size={48} className="mx-auto text-gray-300 mb-4" />
+                  <h3 className="text-lg font-medium text-gray-900">
+                    No reviews yet
+                  </h3>
+                  <p className="text-gray-500">
+                    Be the first to book this exclusive package!
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* Booking Form (Right Side) */}
+            <div className="lg:col-span-4">
+              <div className="lg:sticky lg:top-24 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+                <p className="text-[11px] uppercase tracking-[0.24em] text-[#cc007e] font-bold mb-2">
+                  Package Booking
                 </p>
+                <h3 className="text-2xl font-bold text-gray-900 mb-5">
+                  Book This Package
+                </h3>
+
+                <form onSubmit={handleBookingSubmit} className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-1">
+                      Package
+                    </label>
+                    <input
+                      type="text"
+                      value={bookingForm.packageName}
+                      readOnly
+                      className="w-full h-11 rounded-lg border border-gray-200 bg-gray-50 px-3 text-gray-900"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-1">
+                      Name
+                    </label>
+                    <input
+                      type="text"
+                      value={bookingForm.name}
+                      onChange={(e) => handleBookingChange("name", e.target.value)}
+                      required
+                      className="w-full h-11 rounded-lg border border-gray-200 bg-white px-3 text-gray-900 focus:border-[#cc007e] focus:ring-2 focus:ring-[#cc007e]/20 outline-none"
+                      placeholder="Enter your name"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-1">
+                      Contact Number
+                    </label>
+                    <input
+                      type="tel"
+                      value={bookingForm.contactNumber}
+                      onChange={(e) =>
+                        handleBookingChange("contactNumber", e.target.value)
+                      }
+                      required
+                      className="w-full h-11 rounded-lg border border-gray-200 bg-white px-3 text-gray-900 focus:border-[#cc007e] focus:ring-2 focus:ring-[#cc007e]/20 outline-none"
+                      placeholder="Enter contact number"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-1">
+                      Date
+                    </label>
+                    <input
+                      type="date"
+                      value={bookingForm.date}
+                      onChange={(e) => handleBookingChange("date", e.target.value)}
+                      required
+                      className="w-full h-11 rounded-lg border border-gray-200 bg-white px-3 text-gray-900 focus:border-[#cc007e] focus:ring-2 focus:ring-[#cc007e]/20 outline-none"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-3">
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-1">
+                        Adults
+                      </label>
+                      <input
+                        type="number"
+                        min="0"
+                        value={bookingForm.adults}
+                        onChange={(e) => handleBookingChange("adults", e.target.value)}
+                        required
+                        className="w-full h-11 rounded-lg border border-gray-200 bg-white px-3 text-gray-900 focus:border-[#cc007e] focus:ring-2 focus:ring-[#cc007e]/20 outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-1">
+                        Kids
+                      </label>
+                      <input
+                        type="number"
+                        min="0"
+                        value={bookingForm.kids}
+                        onChange={(e) => handleBookingChange("kids", e.target.value)}
+                        required
+                        className="w-full h-11 rounded-lg border border-gray-200 bg-white px-3 text-gray-900 focus:border-[#cc007e] focus:ring-2 focus:ring-[#cc007e]/20 outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-1">
+                        Infants
+                      </label>
+                      <input
+                        type="number"
+                        min="0"
+                        value={bookingForm.infants}
+                        onChange={(e) =>
+                          handleBookingChange("infants", e.target.value)
+                        }
+                        required
+                        className="w-full h-11 rounded-lg border border-gray-200 bg-white px-3 text-gray-900 focus:border-[#cc007e] focus:ring-2 focus:ring-[#cc007e]/20 outline-none"
+                      />
+                    </div>
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={isSubmittingBooking}
+                    className="w-full h-12 rounded-xl bg-[#cc007e] hover:bg-[#a30065] text-white font-bold transition disabled:opacity-60"
+                  >
+                    {isSubmittingBooking ? "Sending..." : "Send Booking Inquiry"}
+                  </button>
+                </form>
               </div>
-            )}
+            </div>
           </div>
         </div>
 

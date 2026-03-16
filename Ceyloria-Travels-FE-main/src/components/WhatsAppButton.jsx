@@ -4,7 +4,7 @@ import { X } from "lucide-react";
 
 export default function WhatsAppButton() {
   const [showPopup, setShowPopup] = useState(false);
-  const phoneNumber = "0742216579";
+  const phoneNumber = "0704818180";
   // Format for wa.me link: remove leading 0 and add country code (assuming Sri Lanka +94)
   const formattedNumber = `94${phoneNumber.substring(1)}`;
   const whatsappUrl = `https://wa.me/${formattedNumber}`;

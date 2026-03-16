@@ -224,3 +224,60 @@ Board Type: ${boardType}
     return res.status(500).json({ message: "Failed to send accommodation inquiry" });
   }
 };
+
+exports.sendPackageBookingMail = async (req, res) => {
+  const {
+    packageName,
+    name,
+    contactNumber,
+    date,
+    adults,
+    kids,
+    infants,
+  } = req.body;
+
+  if (!packageName || !name || !contactNumber || !date) {
+    return res.status(400).json({ message: "Required fields missing" });
+  }
+
+  try {
+    const recipientEmail = "sandarudilshan24@gmail.com";
+
+    const textMessage = `
+New Package Booking Inquiry
+
+Package: ${packageName}
+Customer Name: ${name}
+Contact Number: ${contactNumber}
+Date: ${date}
+Adults: ${Number(adults) || 0}
+Kids: ${Number(kids) || 0}
+Infants: ${Number(infants) || 0}
+    `;
+
+    const htmlMessage = `
+      <h2>New Package Booking Inquiry</h2>
+      <hr />
+      <p><strong>Package:</strong> ${packageName}</p>
+      <p><strong>Customer Name:</strong> ${name}</p>
+      <p><strong>Contact Number:</strong> ${contactNumber}</p>
+      <p><strong>Date:</strong> ${date}</p>
+      <p><strong>Adults:</strong> ${Number(adults) || 0}</p>
+      <p><strong>Kids:</strong> ${Number(kids) || 0}</p>
+      <p><strong>Infants:</strong> ${Number(infants) || 0}</p>
+    `;
+
+    await transporter.sendMail({
+      from: `"Travel Website" <${process.env.EMAIL_USER}>`,
+      to: recipientEmail,
+      subject: `Package Inquiry - ${packageName}`,
+      text: textMessage,
+      html: htmlMessage,
+    });
+
+    return res.json({ message: "Package inquiry sent successfully" });
+  } catch (error) {
+    console.error("Package booking mail error:", error);
+    return res.status(500).json({ message: "Failed to send package inquiry" });
+  }
+};

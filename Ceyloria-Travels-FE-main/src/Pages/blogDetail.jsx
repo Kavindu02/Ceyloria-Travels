@@ -13,6 +13,39 @@ const BlogDetail = () => {
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const handleShare = async () => {
+    const shareUrl = window.location.href;
+    const shareData = {
+      title: post?.title || "Ceyloria Journal",
+      text: post?.excerpt || "Check out this story from Ceyloria Journal",
+      url: shareUrl,
+    };
+
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+        return;
+      }
+
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(shareUrl);
+        return;
+      }
+
+      const textArea = document.createElement("textarea");
+      textArea.value = shareUrl;
+      textArea.style.position = "fixed";
+      textArea.style.left = "-9999px";
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textArea);
+    } catch (error) {
+      console.error("Share failed:", error);
+    }
+  };
+
   useEffect(() => {
     const fetchPost = async () => {
       try {
@@ -107,7 +140,10 @@ const BlogDetail = () => {
           <div className="flex-1"></div>
 
           <div className="flex items-center gap-4">
-            <button className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-stone-400 hover:text-amber-500 transition-colors">
+            <button
+              onClick={handleShare}
+              className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-stone-400 hover:text-amber-500 transition-colors"
+            >
               <Share2 size={16} /> Share
             </button>
           </div>
