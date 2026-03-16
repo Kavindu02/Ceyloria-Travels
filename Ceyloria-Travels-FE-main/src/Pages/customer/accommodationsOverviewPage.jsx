@@ -1,21 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import {
   MapPin,
   Star,
   Share2,
-  Check,
   ShieldCheck,
-  Home,
-  Users,
-  Wifi,
-  Wind,
-  Coffee,
-  Minus,
-  Plus,
-  ArrowRight,
-  Info,
-  Clock
+  ArrowRight
 } from 'lucide-react';
 import { safeParseJSON } from '../../utils/jsonParser.js';
 
@@ -89,18 +79,19 @@ const getImageUrl = (imagePath) => {
 
 const AccommodationOverviewPage = () => {
   const { id } = useParams();
-  const navigate = useNavigate();
-  const fontHead = "font-['Playfair_Display',_serif]";
+  const bookingSectionRef = useRef(null);
 
   // State
   const [accommodation, setAccommodation] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('overview');
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-
-  // Booking Calculation State
-  const [selectedDays, setSelectedDays] = useState(1);
-  const [selectedRooms, setSelectedRooms] = useState(1);
+  const [bookingForm, setBookingForm] = useState({
+    name: '',
+    contactNumber: '',
+    date: '',
+    boardType: '',
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const fetchAccommodation = async () => {
@@ -134,7 +125,67 @@ const AccommodationOverviewPage = () => {
 
   // Price Calculation
   const pricePerNight = accommodation.pricePerNight || 0;
-  const totalPrice = pricePerNight * selectedDays * selectedRooms;
+
+  const parsedPackages = safeParseJSON(accommodation.packages) || [];
+  const packageList = Array.isArray(parsedPackages) ? parsedPackages : [];
+
+  const extractBoardPrice = (label) => {
+    const matched = packageList.find((item) => {
+      const boardType = String(item?.boardType || item?.type || item?.name || "").toLowerCase();
+      return boardType.includes(label);
+    });
+
+    if (!matched) return 0;
+
+    return Number(matched?.price ?? matched?.pricePerNight ?? 0) || 0;
+  };
+
+  const fullBoardPrice = extractBoardPrice("full");
+  const halfBoardPrice = extractBoardPrice("half");
+
+  const handleBookingChange = (field, value) => {
+    setBookingForm((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleBookingSubmit = async (e) => {
+    e.preventDefault();
+
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/accommodation-booking`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          accommodationName: accommodation?.name || '',
+          name: bookingForm.name,
+          contactNumber: bookingForm.contactNumber,
+          date: bookingForm.date,
+          boardType: bookingForm.boardType,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data?.message || 'Failed to send booking inquiry');
+      }
+
+      alert('Inquiry sent successfully!');
+      setBookingForm({
+        name: '',
+        contactNumber: '',
+        date: '',
+        boardType: '',
+      });
+    } catch (error) {
+      alert(error.message || 'Failed to send booking inquiry');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const handleShare = async () => {
     try {
@@ -153,6 +204,13 @@ const AccommodationOverviewPage = () => {
         console.error('Sharing failed:', error);
       }
     }
+  };
+
+  const handleScrollToBookingForm = () => {
+    bookingSectionRef.current?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    });
   };
 
   return (
@@ -224,46 +282,34 @@ const AccommodationOverviewPage = () => {
                 <div className="flex justify-between items-end">
                   <div>
                     <p className="text-gray-500 text-sm mb-1">Starting From</p>
-                    <h4 className="text-4xl font-black text-gray-900">${pricePerNight} <span className="text-sm font-light text-gray-500">/ night</span></h4>
+                    <h4 className="text-4xl font-black text-gray-900">${pricePerNight}</h4>
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div className="space-y-3">
-                    <label className="text-xs font-semibold tracking-wide text-gray-500 uppercase">Residency Duration</label>
-                    <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-100">
-                      <button onClick={() => setSelectedDays(Math.max(1, selectedDays - 1))} className="w-9 h-9 rounded-lg bg-white shadow-sm flex items-center justify-center text-gray-900 hover:bg-[#c8007b] hover:text-white transition-all">
-                        <Minus size={16} />
-                      </button>
-                      <span className="font-bold text-base">{selectedDays} Nights</span>
-                      <button onClick={() => setSelectedDays(selectedDays + 1)} className="w-9 h-9 rounded-lg bg-white shadow-sm flex items-center justify-center text-gray-900 hover:bg-[#c8007b] hover:text-white transition-all">
-                        <Plus size={16} />
-                      </button>
-                    </div>
+                  <div className="rounded-xl border border-gray-100 bg-gray-50 p-4">
+                    <p className="text-xs uppercase tracking-wide text-gray-500 font-semibold">Full Board</p>
+                    <p className="text-2xl font-black text-[#c8007b] mt-2">
+                      {fullBoardPrice > 0 ? `$${fullBoardPrice.toLocaleString()}` : "Not available"}
+                    </p>
                   </div>
 
-                  <div className="space-y-3">
-                    <label className="text-xs font-semibold tracking-wide text-gray-500 uppercase">Number of Suites</label>
-                    <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-100">
-                      <button onClick={() => setSelectedRooms(Math.max(1, selectedRooms - 1))} className="w-9 h-9 rounded-lg bg-white shadow-sm flex items-center justify-center text-gray-900 hover:bg-[#c8007b] hover:text-white transition-all">
-                        <Minus size={16} />
-                      </button>
-                      <span className="font-bold text-base">{selectedRooms} Rooms</span>
-                      <button onClick={() => setSelectedRooms(selectedRooms + 1)} className="w-9 h-9 rounded-lg bg-white shadow-sm flex items-center justify-center text-gray-900 hover:bg-[#c8007b] hover:text-white transition-all">
-                        <Plus size={16} />
-                      </button>
-                    </div>
+                  <div className="rounded-xl border border-gray-100 bg-gray-50 p-4">
+                    <p className="text-xs uppercase tracking-wide text-gray-500 font-semibold">Half Board</p>
+                    <p className="text-2xl font-black text-[#c8007b] mt-2">
+                      {halfBoardPrice > 0 ? `$${halfBoardPrice.toLocaleString()}` : "Not available"}
+                    </p>
                   </div>
                 </div>
 
                 <div className="pt-4 border-t border-gray-100">
                   <div className="flex justify-between items-center mb-6">
-                    <span className="text-gray-500 font-semibold text-sm">Total Investment</span>
-                    <span className="text-3xl font-black text-[#c8007b]">${totalPrice.toLocaleString()}</span>
+                    <span className="text-gray-500 font-semibold text-sm">Base Rate</span>
+                    <span className="text-3xl font-black text-[#c8007b]">${pricePerNight.toLocaleString()}</span>
                   </div>
 
                   <button
-                    onClick={() => navigate('/contact')}
+                    onClick={handleScrollToBookingForm}
                     className="w-full bg-[#c8007b] hover:bg-[#a30065] text-white text-lg font-bold py-4 rounded-xl shadow-lg shadow-[#c8007b]/30 transition-transform active:scale-95 flex items-center justify-center gap-2"
                   >
                     Book Your Stay <ArrowRight size={20} />
@@ -279,87 +325,84 @@ const AccommodationOverviewPage = () => {
           </div>
         </div>
 
-        <div className="mt-16 md:mt-24 border-t border-gray-100 pt-8">
-          <div className="flex border-b border-gray-200 mb-8 overflow-x-auto">
-            {['Overview', 'Amenities', 'Details'].map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab.toLowerCase())}
-                className={`px-6 py-4 font-bold text-sm uppercase tracking-wide border-b-2 transition-colors whitespace-nowrap ${activeTab === tab.toLowerCase()
-                    ? 'border-[#c8007b] text-[#c8007b]'
-                    : 'border-transparent text-gray-500 hover:text-gray-800'
-                  }`}
-              >
-                {tab}
-              </button>
-            ))}
-          </div>
+        <div ref={bookingSectionRef} className="mt-16 border-t border-gray-100 pt-10 flex justify-center">
+          <Reveal direction="up" className="w-full max-w-4xl">
+            <div className="relative overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-xl shadow-gray-200/60">
+              <div className="absolute -top-28 -right-24 h-64 w-64 rounded-full bg-[#c8007b]/10 blur-3xl" />
+              <div className="absolute -bottom-28 -left-24 h-64 w-64 rounded-full bg-cyan-200/20 blur-3xl" />
 
-          <div className="max-w-4xl min-h-[300px]">
-            {activeTab === 'overview' && (
-              <Reveal direction="up" className="space-y-8">
-                <h3 className={`${fontHead} text-3xl font-bold text-gray-900`}>A Sanctuary of Perfection.</h3>
-                <p className="text-gray-600 leading-relaxed text-lg font-light">
-                  {accommodation.description || "Experience comfort and luxury at its finest. Our property offers a unique blend of modern sophistication and island charm."}
+              <div className="relative p-6 md:p-10">
+                <p className="text-[11px] uppercase tracking-[0.28em] text-[#c8007b] font-bold mb-3">Accommodation Inquiry</p>
+                <h2 className="text-3xl md:text-4xl font-black text-gray-900 leading-tight mb-2">
+                  {accommodation?.name || 'Selected Accommodation'}
+                </h2>
+                <p className="text-gray-500 text-sm md:text-base mb-8">
+                  Fill in your details and we will send your request instantly.
                 </p>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-8 border-t border-gray-100">
-                  <div className="flex items-center gap-5 group">
-                    <div className="w-12 h-12 rounded-full bg-gray-50 flex items-center justify-center text-[#c8007b] group-hover:bg-[#c8007b] group-hover:text-white transition-all">
-                      <Wifi size={20} />
+
+                <form onSubmit={handleBookingSubmit} className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div className="space-y-2">
+                      <label className="text-sm font-semibold text-gray-700">Name</label>
+                      <input
+                        type="text"
+                        value={bookingForm.name}
+                        onChange={(e) => handleBookingChange('name', e.target.value)}
+                        required
+                        className="w-full h-12 rounded-xl border border-gray-200 bg-white px-4 text-gray-900 focus:border-[#c8007b] focus:ring-2 focus:ring-[#c8007b]/20 outline-none transition"
+                        placeholder="Enter your name"
+                      />
                     </div>
-                    <div>
-                      <p className="font-bold text-gray-900">Complimentary Connectivity</p>
-                      <p className="text-xs text-gray-500">High-speed wireless internet</p>
+
+                    <div className="space-y-2">
+                      <label className="text-sm font-semibold text-gray-700">Contact Number</label>
+                      <input
+                        type="tel"
+                        value={bookingForm.contactNumber}
+                        onChange={(e) => handleBookingChange('contactNumber', e.target.value)}
+                        required
+                        className="w-full h-12 rounded-xl border border-gray-200 bg-white px-4 text-gray-900 focus:border-[#c8007b] focus:ring-2 focus:ring-[#c8007b]/20 outline-none transition"
+                        placeholder="Enter contact number"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-sm font-semibold text-gray-700">Date</label>
+                      <input
+                        type="date"
+                        value={bookingForm.date}
+                        onChange={(e) => handleBookingChange('date', e.target.value)}
+                        required
+                        className="w-full h-12 rounded-xl border border-gray-200 bg-white px-4 text-gray-900 focus:border-[#c8007b] focus:ring-2 focus:ring-[#c8007b]/20 outline-none transition"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-sm font-semibold text-gray-700">Board Type</label>
+                      <select
+                        value={bookingForm.boardType}
+                        onChange={(e) => handleBookingChange('boardType', e.target.value)}
+                        required
+                        className="w-full h-12 rounded-xl border border-gray-200 bg-white px-4 text-gray-900 focus:border-[#c8007b] focus:ring-2 focus:ring-[#c8007b]/20 outline-none transition"
+                      >
+                        <option value="">Select board type</option>
+                        <option value="Full Board">Full Board</option>
+                        <option value="Half Board">Half Board</option>
+                      </select>
                     </div>
                   </div>
-                  <div className="flex items-center gap-5 group">
-                    <div className="w-12 h-12 rounded-full bg-gray-50 flex items-center justify-center text-[#c8007b] group-hover:bg-[#c8007b] group-hover:text-white transition-all">
-                      <Wind size={20} />
-                    </div>
-                    <div>
-                      <p className="font-bold text-gray-900">Climate Excellence</p>
-                      <p className="text-xs text-gray-500">Full air-conditioning control</p>
-                    </div>
-                  </div>
-                </div>
-              </Reveal>
-            )}
 
-            {activeTab === 'amenities' && (
-              <Reveal direction="up" className="grid grid-cols-2 md:grid-cols-3 gap-6">
-                {(() => {
-                  const parsedAmenities = safeParseJSON(accommodation.amenities) || [];
-                  const displayAmenities = parsedAmenities.length > 0
-                    ? parsedAmenities
-                    : ["Private Pool", "24/7 Butler", "Ocean View", "Mini Bar", "Designer Beds", "Smart Home Tech"];
-
-                  return displayAmenities.map((item, idx) => (
-                    <div key={idx} className="flex items-center gap-3 p-4 rounded-lg bg-gray-50 border border-gray-100 group hover:border-[#c8007b]/20 transition-all">
-                      <div className="w-2 h-2 rounded-full bg-[#c8007b]" />
-                      <span className="text-gray-900 font-semibold text-sm">{item}</span>
-                    </div>
-                  ));
-                })()}
-              </Reveal>
-            )}
-
-            {activeTab === 'details' && (
-              <Reveal direction="up" className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="p-6 rounded-xl bg-gray-900 text-white">
-                  <p className="text-[#c8007b] font-bold text-xs tracking-wide uppercase mb-3">Space</p>
-                  <h4 className={`${fontHead} text-3xl mb-3`}>{accommodation.roomType || "Signature Suite"}</h4>
-                  <p className="text-white/70 font-light text-sm italic">Designed for ultimate tranquility.</p>
-                </div>
-                <div className="p-6 rounded-xl border border-gray-100">
-                  <p className="text-gray-500 font-bold text-xs tracking-wide uppercase mb-3">Capacity</p>
-                  <h4 className={`${fontHead} text-3xl text-gray-900`}>{accommodation.maxGuests || 2} Preferred Guests</h4>
-                  <div className="mt-6 flex items-center gap-3 text-gray-500 text-xs">
-                    <Clock size={14} className="text-[#c8007b]" /> Check-in: 2:00 PM • Checkout: 12:00 PM
-                  </div>
-                </div>
-              </Reveal>
-            )}
-          </div>
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="w-full h-12 rounded-xl bg-gradient-to-r from-[#c8007b] to-[#a30065] text-white font-bold tracking-wide hover:shadow-lg hover:shadow-[#c8007b]/30 transition disabled:opacity-60"
+                  >
+                    {isSubmitting ? 'Sending...' : 'Send Inquiry'}
+                  </button>
+                </form>
+              </div>
+            </div>
+          </Reveal>
         </div>
       </div>
     </div>

@@ -249,7 +249,7 @@ const AccommodationsPage = () => {
                   {/* Price Group */}
                   <div className="space-y-6">
                     <div className="flex justify-between items-end">
-                      <p className="text-[10px] font-bold tracking-widest text-[#c8007b] uppercase">Max Price/Night</p>
+                      <p className="text-[10px] font-bold tracking-widest text-[#c8007b] uppercase">Max Price</p>
                       <span className="text-xl font-black text-gray-900">${priceRange}</span>
                     </div>
                     <input

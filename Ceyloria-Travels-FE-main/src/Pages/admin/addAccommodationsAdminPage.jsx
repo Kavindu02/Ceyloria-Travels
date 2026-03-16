@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { FaArrowLeft } from "react-icons/fa";
-import mediaUpload from "../../utils/mediaUpload"; // මේක file upload function එකයි
+import mediaUpload from "../../utils/mediaUpload"; 
 
 export default function AddAccommodationAdminPage() {
   const navigate = useNavigate();
@@ -12,6 +12,8 @@ export default function AddAccommodationAdminPage() {
     type: "",
     location: "",
     pricePerNight: 0,
+    fullBoardPrice: "",
+    halfBoardPrice: "",
     amenities: [""],
     images: [],
   });
@@ -62,12 +64,37 @@ export default function AddAccommodationAdminPage() {
     const token = localStorage.getItem("token");
 
     try {
+      const fullBoardPrice = parseFloat(acc.fullBoardPrice) || 0;
+      const halfBoardPrice = parseFloat(acc.halfBoardPrice) || 0;
+
+      const packages = [];
+
+      if (fullBoardPrice > 0) {
+        packages.push({
+          boardType: "Full Board",
+          price: fullBoardPrice,
+          pricePerNight: fullBoardPrice,
+        });
+      }
+
+      if (halfBoardPrice > 0) {
+        packages.push({
+          boardType: "Half Board",
+          price: halfBoardPrice,
+          pricePerNight: halfBoardPrice,
+        });
+      }
+
       const payload = {
         ...acc,
         pricePerNight: parseFloat(acc.pricePerNight) || 0,
         amenities: acc.amenities.filter(a => a && a.trim() !== ""),
-        images: acc.images.filter(img => img && img.trim() !== "")
+        images: acc.images.filter(img => img && img.trim() !== ""),
+        packages,
       };
+
+      delete payload.fullBoardPrice;
+      delete payload.halfBoardPrice;
 
       await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/accommodations`,
@@ -134,13 +161,39 @@ export default function AddAccommodationAdminPage() {
 
         {/* Price per Night */}
         <div className="space-y-2">
-          <label className="text-sm font-semibold text-slate-300">Price per Night ($)</label>
+          <label className="text-sm font-semibold text-slate-300">Main Price ($)</label>
           <input
             type="number"
             value={acc.pricePerNight}
             onChange={(e) => handleChange("pricePerNight", e.target.value)}
             className="w-full h-12 rounded-xl bg-slate-800 border border-white/10 px-4 text-white placeholder:text-slate-500 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none transition"
           />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <label className="text-sm font-semibold text-slate-300">Full Board Price ($)</label>
+            <input
+              type="number"
+              min="0"
+              value={acc.fullBoardPrice}
+              onChange={(e) => handleChange("fullBoardPrice", e.target.value)}
+              className="w-full h-12 rounded-xl bg-slate-800 border border-white/10 px-4 text-white placeholder:text-slate-500 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none transition"
+              placeholder="Enter full board price"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-sm font-semibold text-slate-300">Half Board Price ($)</label>
+            <input
+              type="number"
+              min="0"
+              value={acc.halfBoardPrice}
+              onChange={(e) => handleChange("halfBoardPrice", e.target.value)}
+              className="w-full h-12 rounded-xl bg-slate-800 border border-white/10 px-4 text-white placeholder:text-slate-500 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none transition"
+              placeholder="Enter half board price"
+            />
+          </div>
         </div>
 
         {/* Amenities */}

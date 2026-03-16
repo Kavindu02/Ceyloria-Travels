@@ -91,6 +91,20 @@ export default function AccommodationsAdminPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {accommodations.map((acc) => {
                 const parsedImages = (safeParseJSON(acc.images) || []).filter(i => i && i.trim() !== "");
+                const parsedPackages = safeParseJSON(acc.packages) || [];
+                const packageList = Array.isArray(parsedPackages) ? parsedPackages : [];
+
+                const getBoardPrice = (label) => {
+                  const matched = packageList.find((item) => {
+                    const boardType = String(item?.boardType || item?.type || item?.name || "").toLowerCase();
+                    return boardType.includes(label);
+                  });
+
+                  return Number(matched?.price ?? matched?.pricePerNight ?? 0) || 0;
+                };
+
+                const fullBoardPrice = getBoardPrice("full");
+                const halfBoardPrice = getBoardPrice("half");
                 return (
                 <div key={acc.id} className="bg-slate-900/50 rounded-2xl overflow-hidden border border-white/10 flex flex-col">
                     <div className="h-48 overflow-hidden relative group">
@@ -105,7 +119,15 @@ export default function AccommodationsAdminPage() {
                         <p className="text-sm text-slate-400 line-clamp-2">{acc.description ?? "No description available."}</p>
                         <div className="mt-4 flex items-center gap-2 text-xs text-slate-500">
                             <span className="bg-slate-700 px-2 py-1 rounded">{acc.location ?? "N/A"}</span>
-                          <span className="bg-teal-500/10 text-teal-400 px-2 py-1 rounded border border-teal-500/30 font-semibold">${(acc.pricePerNight ?? 0).toLocaleString()} / night</span>
+                          <span className="bg-teal-500/10 text-teal-400 px-2 py-1 rounded border border-teal-500/30 font-semibold">${(acc.pricePerNight ?? 0).toLocaleString()} </span>
+                        </div>
+                        <div className="mt-3 flex flex-wrap items-center gap-2 text-xs">
+                          <span className="bg-fuchsia-500/10 text-fuchsia-300 px-2 py-1 rounded border border-fuchsia-500/30 font-semibold">
+                            Full Board: {fullBoardPrice > 0 ? `$${fullBoardPrice.toLocaleString()}` : "N/A"}
+                          </span>
+                          <span className="bg-cyan-500/10 text-cyan-300 px-2 py-1 rounded border border-cyan-500/30 font-semibold">
+                            Half Board: {halfBoardPrice > 0 ? `$${halfBoardPrice.toLocaleString()}` : "N/A"}
+                          </span>
                         </div>
                     </div>
                       <div className="p-4 border-t border-white/10 flex justify-end gap-2 bg-slate-900/40">

@@ -173,3 +173,54 @@ Phone/WhatsApp: ${data.phone || 'None'}
     return res.status(500).json({ message: "Failed to send trip plan details" });
   }
 };
+
+exports.sendAccommodationBookingMail = async (req, res) => {
+  const {
+    accommodationName,
+    name,
+    contactNumber,
+    date,
+    boardType,
+  } = req.body;
+
+  if (!accommodationName || !name || !contactNumber || !date || !boardType) {
+    return res.status(400).json({ message: "Required fields missing" });
+  }
+
+  try {
+    const recipientEmail = "sandarudilshan24@gmail.com";
+
+    const textMessage = `
+New Accommodation Booking Inquiry
+
+Accommodation: ${accommodationName}
+Customer Name: ${name}
+Contact Number: ${contactNumber}
+Date: ${date}
+Board Type: ${boardType}
+    `;
+
+    const htmlMessage = `
+      <h2>New Accommodation Booking Inquiry</h2>
+      <hr />
+      <p><strong>Accommodation:</strong> ${accommodationName}</p>
+      <p><strong>Customer Name:</strong> ${name}</p>
+      <p><strong>Contact Number:</strong> ${contactNumber}</p>
+      <p><strong>Date:</strong> ${date}</p>
+      <p><strong>Board Type:</strong> ${boardType}</p>
+    `;
+
+    await transporter.sendMail({
+      from: `"Travel Website" <${process.env.EMAIL_USER}>`,
+      to: recipientEmail,
+      subject: `Accommodation Inquiry - ${accommodationName}`,
+      text: textMessage,
+      html: htmlMessage,
+    });
+
+    return res.json({ message: "Accommodation inquiry sent successfully" });
+  } catch (error) {
+    console.error("Accommodation booking mail error:", error);
+    return res.status(500).json({ message: "Failed to send accommodation inquiry" });
+  }
+};

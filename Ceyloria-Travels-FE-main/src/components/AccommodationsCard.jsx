@@ -171,9 +171,6 @@ const AccommodationCard = ({ accommodation }) => {
           
           {/* Price Block */}
           <div>
-            <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest block mb-1">
-                Per Night From
-            </span>
             <div className="flex items-baseline gap-2">
               <span className="text-2xl font-black text-gray-900 tracking-tight">
                 {startingPrice ? `$${startingPrice}` : <span className="text-lg text-gray-400">Ask</span>}
@@ -201,7 +198,7 @@ const AccommodationCard = ({ accommodation }) => {
             </span>
             {/* Hover Gradient */}
             {isAvailable && (
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-cyan-400 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300 ease-out" />
+              <div className="absolute inset-0 bg-[#C8007B] translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300 ease-out" />
             )}
           </button>
           

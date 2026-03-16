@@ -19,6 +19,21 @@ const normalizeStringArray = (value) => {
   return [];
 };
 
+const normalizePackageArray = (value) => {
+  if (Array.isArray(value)) return value;
+
+  if (typeof value === "string") {
+    try {
+      const parsed = JSON.parse(value);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  }
+
+  return [];
+};
+
 export default function UpdateAccommodationAdminPage() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -27,6 +42,9 @@ export default function UpdateAccommodationAdminPage() {
     type: "",
     location: "",
     pricePerNight: 0,
+    fullBoardPrice: "",
+    halfBoardPrice: "",
+    existingPackages: [],
     amenities: [],
     images: [],
   });
@@ -46,11 +64,25 @@ export default function UpdateAccommodationAdminPage() {
       .then((res) => {
         // Ensure amenities & images exist
         const data = res.data;
+        const parsedPackages = normalizePackageArray(data.packages);
+
+        const getBoardPrice = (label) => {
+          const matched = parsedPackages.find((item) => {
+            const boardType = String(item?.boardType || item?.type || item?.name || "").toLowerCase();
+            return boardType.includes(label);
+          });
+
+          return matched ? String(Number(matched?.price ?? matched?.pricePerNight ?? 0) || 0) : "";
+        };
+
         setAcc({
           name: data.name || "",
           type: data.type || "",
           location: data.location || "",
           pricePerNight: data.pricePerNight || 0,
+          fullBoardPrice: getBoardPrice("full"),
+          halfBoardPrice: getBoardPrice("half"),
+          existingPackages: parsedPackages,
           amenities: normalizeStringArray(data.amenities),
           images: normalizeStringArray(data.images),
         });
@@ -106,12 +138,43 @@ export default function UpdateAccommodationAdminPage() {
     const token = localStorage.getItem("token");
 
     try {
+      const fullBoardPrice = parseFloat(acc.fullBoardPrice) || 0;
+      const halfBoardPrice = parseFloat(acc.halfBoardPrice) || 0;
+
+      const preservedPackages = normalizePackageArray(acc.existingPackages).filter((item) => {
+        const boardType = String(item?.boardType || item?.type || item?.name || "").toLowerCase();
+        return !boardType.includes("full") && !boardType.includes("half");
+      });
+
+      const boardPackages = [];
+
+      if (fullBoardPrice > 0) {
+        boardPackages.push({
+          boardType: "Full Board",
+          price: fullBoardPrice,
+          pricePerNight: fullBoardPrice,
+        });
+      }
+
+      if (halfBoardPrice > 0) {
+        boardPackages.push({
+          boardType: "Half Board",
+          price: halfBoardPrice,
+          pricePerNight: halfBoardPrice,
+        });
+      }
+
       const payload = {
         ...acc,
         pricePerNight: parseFloat(acc.pricePerNight) || 0,
         amenities: normalizeStringArray(acc.amenities).filter(a => a && a.trim() !== ""),
-        images: normalizeStringArray(acc.images).filter(img => img && img.trim() !== "")
+        images: normalizeStringArray(acc.images).filter(img => img && img.trim() !== ""),
+        packages: [...preservedPackages, ...boardPackages],
       };
+
+      delete payload.fullBoardPrice;
+      delete payload.halfBoardPrice;
+      delete payload.existingPackages;
 
       await axios.put(
         `${import.meta.env.VITE_BACKEND_URL}/accommodations/${id}`,
@@ -177,13 +240,39 @@ export default function UpdateAccommodationAdminPage() {
 
         {/* Price per Night */}
         <div className="space-y-2">
-          <label className="text-sm font-semibold text-slate-300">Price per Night ($)</label>
+          <label className="text-sm font-semibold text-slate-300">Main Price ($)</label>
           <input
             type="number"
             value={acc.pricePerNight}
             onChange={(e) => handleChange("pricePerNight", e.target.value)}
             className="w-full h-12 rounded-xl bg-slate-800 border border-white/10 px-4 text-white focus:border-teal-500 outline-none transition"
           />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <label className="text-sm font-semibold text-slate-300">Full Board Price ($)</label>
+            <input
+              type="number"
+              min="0"
+              value={acc.fullBoardPrice}
+              onChange={(e) => handleChange("fullBoardPrice", e.target.value)}
+              className="w-full h-12 rounded-xl bg-slate-800 border border-white/10 px-4 text-white focus:border-teal-500 outline-none transition"
+              placeholder="Enter full board price"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-sm font-semibold text-slate-300">Half Board Price ($)</label>
+            <input
+              type="number"
+              min="0"
+              value={acc.halfBoardPrice}
+              onChange={(e) => handleChange("halfBoardPrice", e.target.value)}
+              className="w-full h-12 rounded-xl bg-slate-800 border border-white/10 px-4 text-white focus:border-teal-500 outline-none transition"
+              placeholder="Enter half board price"
+            />
+          </div>
         </div>
 
         {/* Amenities */}
