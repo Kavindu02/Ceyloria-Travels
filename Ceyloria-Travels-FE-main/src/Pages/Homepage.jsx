@@ -242,17 +242,17 @@ export default function HomePage() {
             playsInline
             disablePictureInPicture
             preload="auto"
-            poster="https://res.cloudinary.com/dicvgtusz/video/upload/q_auto,f_auto,so_0/v1772078453/Ceyloria_travels_yep9qt.jpg"
+            poster="https://res.cloudinary.com/dz0hl3qmz/video/upload/q_auto,f_auto,so_0/v1773637258/Ceyloria_travels_03_fz0aor.jpg"
             className="absolute inset-0 w-full h-full object-cover brightness-115 contrast-110"
             style={{ filter: 'brightness(1.10) contrast(1.08)' }}
           >
-            <source src="https://res.cloudinary.com/dicvgtusz/video/upload/q_auto,f_auto/v1772078453/Ceyloria_travels_yep9qt.mp4" type="video/mp4" />
+            <source src="https://res.cloudinary.com/dz0hl3qmz/video/upload/v1773637258/Ceyloria_travels_03_fz0aor.mp4" type="video/mp4" />
           </video>
         </div>
         {/* Gradient Overlays for better text readability */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/15 to-black/0 z-10 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/25 to-black/0 z-10 pointer-events-none" />
 
-        <div className="absolute inset-0 z-20 flex flex-col justify-end pb-40 md:pb-32 px-6 md:px-16 lg:px-24">
+        <div className="absolute inset-0 z-20 flex flex-col justify-end pb-40 md:pb-24 px-6 md:px-16 lg:px-24">
           <div className="max-w-6xl">
             <h1 className={`${fontHead} text-4xl sm:text-6xl md:text-7xl lg:text-[8rem] xl:text-[9rem] leading-[0.95] md:leading-[0.9] mb-5 md:mb-7 drop-shadow-2xl tracking-tight`}>
               {["Discover", "The", "Paradise"].map((word, i) => (
