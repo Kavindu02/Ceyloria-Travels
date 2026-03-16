@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { ChevronLeft, MapPin, Compass, ArrowRight, Share2, Tag, CheckCircle2 } from "lucide-react";
+import { MapPin, Compass, ArrowRight } from "lucide-react";
 import toast from "react-hot-toast";
 import { safeParseJSON } from "../utils/jsonParser.js";
 
@@ -51,19 +51,11 @@ const ActivityDetail = () => {
                         alt={activity.title}
                         className="w-full h-full object-cover animate-subtle-zoom"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-b from-gray-900/60 via-gray-900/40 to-gray-50" />
+                    <div className="absolute inset-0 bg-gradient-to-b from-gray-900/76 via-gray-900/40 to-gray-200/15" />
                 </div>
 
-                <div className="relative z-10 container mx-auto px-6 h-full flex flex-col justify-end pb-32">
-                    <Link
-                        to="/activities"
-                        className="flex items-center gap-2 text-white/80 hover:text-white mb-8 w-fit transition-all group animate-fade-in"
-                    >
-                        <ChevronLeft size={24} className="group-hover:-translate-x-1 transition-transform" />
-                        <span className="font-bold tracking-wide">Explore All Activities</span>
-                    </Link>
-
-                    <div className="max-w-4xl space-y-6 animate-fade-in-up">
+                <div className="relative z-10 container mx-auto px-6 h-full flex flex-col justify-end pb-6 md:pb-10">
+                    <div className="max-w-4xl space-y-6 animate-fade-in-up translate-y-20 md:translate-y-28">
                         <div className="flex items-center gap-3">
                             <span className="px-4 py-1.5 bg-[#cc007e] text-white text-[10px] font-black uppercase tracking-widest rounded-full shadow-lg shadow-[#cc007e]/20">
                                 {activity.category}
@@ -75,7 +67,7 @@ const ActivityDetail = () => {
                         <p className="text-xl md:text-2xl text-[#cc007e] font-light italic border-l-4 border-[#cc007e]/80 pl-6 max-w-2xl">
                             {activity.tagline}
                         </p>
-                        <p className="text-gray-300 max-w-2xl text-lg leading-relaxed pt-4 font-light">
+                        <p className="text-white/95 drop-shadow-[0_2px_10px_rgba(0,0,0,0.55)] max-w-2xl text-lg leading-relaxed pt-4 font-light">
                             {activity.description}
                         </p>
                     </div>
@@ -83,7 +75,7 @@ const ActivityDetail = () => {
             </div>
 
             {/* --- SHOWCASE / TRAVEL GUIDE LAYOUT --- */}
-            <div className="container mx-auto px-6 -mt-20 relative z-20 space-y-24 pb-24">
+            <div className="container mx-auto px-6 mt-14 relative z-20 space-y-24 pb-24">
 
                 {/* Loop through items (Sub-activities) */}
                 {(safeParseJSON(activity.items) || []).length > 0 ? (

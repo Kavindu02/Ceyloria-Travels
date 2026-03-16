@@ -1,5 +1,5 @@
 import React from "react";
-import { ChevronLeft, MapPin, Compass, ArrowRight } from "lucide-react";
+import { MapPin, Compass, ArrowRight } from "lucide-react";
 import { safeParseJSON } from "../utils/jsonParser.js";
 import DestinationContactForm from "./DestinationContactForm.jsx";
 
@@ -69,16 +69,6 @@ const DestinationsDetail = ({ selectedCategory, onBack }) => {
 
         <div className="relative z-20 container mx-auto px-6 md:px-12 lg:px-24">
           <Reveal direction="up">
-            <button
-              onClick={onBack}
-              className="group flex items-center gap-3 text-white/70 hover:text-white transition-all mb-12 uppercase tracking-[0.2em] text-xs font-bold"
-            >
-              <div className="w-8 h-8 rounded-full border border-white/20 flex items-center justify-center group-hover:border-white transition-all">
-                <ChevronLeft size={16} />
-              </div>
-              Back to Overview
-            </button>
-
             <div className="max-w-4xl space-y-6">
               <h1 className={`${fontHead} text-5xl md:text-7xl lg:text-8xl text-white tracking-tight leading-none drop-shadow-2xl`}>
                 {selectedCategory.title}
