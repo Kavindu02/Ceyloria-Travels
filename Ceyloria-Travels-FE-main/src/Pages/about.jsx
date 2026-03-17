@@ -222,9 +222,12 @@ journeys that inspire meaningful connections with the island’s culture, nature
                     Tailored tour packages designed specifically to match your needs and travel style. We believe every traveler is unique.
                   </p>
                 </div>
-                <div className="relative z-10 mt-12 flex items-center gap-2 text-cyan-400 font-bold text-sm tracking-widest uppercase opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-500">
+                <Link
+                  to="/packages"
+                  className="relative z-10 mt-12 flex items-center gap-2 text-cyan-400 font-bold text-sm tracking-widest uppercase opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-500"
+                >
                   Read More <ArrowRight size={16} />
-                </div>
+                </Link>
               </div>
             </Reveal>
 
