@@ -30,20 +30,12 @@ export default function Navbar() {
     setMenuOpen(false);
   }, [location]);
 
-  // Check if on overview pages (white background pages)
-  const isOverviewPage =
-    location.pathname.includes("/package-overview/") ||
-    location.pathname.includes("/accommodation-overview/") ||
-    location.pathname.includes("/plan-my-trip");
-
   return (
     <nav
       className={`fixed top-0 w-full z-50 transition-all duration-300 ${
         scrolled || menuOpen
           ? "bg-black/95 border-b border-white/10 shadow-lg"
-          : isOverviewPage
-            ? "bg-black/80 border-b border-white/5 py-4"
-            : "bg-black/60 md:bg-transparent py-4"
+          : "bg-black/60 md:bg-transparent py-4"
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 lg:px-6 xl:px-12 h-16 md:h-20 flex items-center justify-between flex-nowrap">
@@ -56,7 +48,13 @@ export default function Navbar() {
         </Link>
 
         {/* Desktop Navigation */}
-        <ul className="hidden lg:flex items-center gap-1 xl:gap-2 text-white/90 font-medium text-[15px] xl:text-[18px] flex-nowrap">
+        <ul
+          className={`hidden lg:flex items-center gap-1 xl:gap-2 text-white/90 font-medium text-[15px] xl:text-[18px] flex-nowrap rounded-full px-4 py-2 transition-all duration-300 ${
+            scrolled || menuOpen
+              ? "bg-transparent border border-transparent shadow-none backdrop-blur-0"
+              : "bg-white/10 border border-white/20 shadow-[0_8px_24px_rgba(0,0,0,0.2)] backdrop-blur-md"
+          }`}
+        >
           {[
             "Home",
             "About",

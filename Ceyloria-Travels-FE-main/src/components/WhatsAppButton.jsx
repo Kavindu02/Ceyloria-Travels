@@ -34,7 +34,7 @@ export default function WhatsAppButton() {
               <FaWhatsapp size={16} />
             </div>
             <div>
-              <p className="font-bold text-sm">Need Help?</p>
+              <p className="font-bold text-sm">Quick Enquiry</p>
               <p className="text-xs text-slate-500 mt-1 leading-relaxed">Chat with us on WhatsApp for quick support!</p>
             </div>
           </div>

@@ -12,7 +12,7 @@ export default function PlanMyTrip() {
 
     const [formData, setFormData] = useState({
         // Step 1: Basic Trip Details
-        destination: "",
+        destination: "Sri Lanka",
         travelDates: { start: "", end: "", flexible: false },
         travelers: { adults: 2, children: 0, infants: 0 },
         // Step 2: Budget & Preferences

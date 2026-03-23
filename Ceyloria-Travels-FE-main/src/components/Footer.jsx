@@ -46,7 +46,7 @@ export default function Footer() {
             </p>
 
             <div className="space-y-4 pt-2">
-              <ContactItem icon={MapPin} text="No 52,Dumbaragama, Kalugala, Sri Lanka" />
+              <ContactItem icon={MapPin} text="No 52, Dumbaragama, Kalugala, Sri Lanka" />
               <ContactItem icon={Phone} text="0714818180" />
               <ContactItem icon={Mail} text="info@ceyloriatravels.com" />
             </div>
@@ -116,11 +116,11 @@ gap-4 text-sm text-gray-500 text-center">
 
 function ContactItem({ icon: Icon, text }) {
   return (
-    <div className="flex items-start gap-3 group cursor-default">
-      <div className="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/5 text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300">
-        <Icon size={16} />
+    <div className="flex items-center gap-3 group cursor-default">
+      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-black/40 ring-1 ring-white/10 text-blue-500 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300">
+        <Icon size={17} />
       </div>
-      <p className="text-sm text-gray-300 group-hover:text-white transition-colors">{text}</p>
+      <p className="text-sm leading-6 text-gray-300 group-hover:text-white transition-colors">{text}</p>
     </div>
   );
 }

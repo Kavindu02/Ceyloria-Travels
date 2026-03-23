@@ -306,7 +306,7 @@ export default function HomePage() {
 experiences, and personalized service.”
                 </p>
 
-                <ul className="space-y-4 mb-10">
+                <ul className="space-y-2 mb-10">
                   {['Expert Local Knowledge', 'Customized Travel Experiences', 'Reliable & Trusted Service', 'Transparent & Competitive Pricing','Professional Drivers & Guides','24/7 Customer Support'].map((item, i) => (
                     <li key={i} className="flex items-center gap-4 text-gray-900 font-bold">
                       <ArrowRight className="w-5 h-5 text-gray-900 stroke-[3]" />
@@ -332,10 +332,10 @@ experiences, and personalized service.”
             </div>
 
             {/* Column 2: Middle Image Pill */}
-            <div className="w-full lg:w-1/3 flex justify-center relative py-12 lg:py-0">
+            <div className="w-full lg:w-1/3 flex justify-center lg:items-end relative pt-12 pb-0 lg:pt-0 lg:pb-9">
               <Reveal delay={100}>
                 {/* White background pill for spacing */}
-                <div className="relative w-full max-w-[350px] aspect-[6/10] rounded-[200px] bg-white p-2 md:p-4 mt-8 lg:mt-0">
+                <div className="relative w-full max-w-[350px] aspect-[6/11] rounded-[200px] bg-white p-2 md:p-4 mt-8 lg:mt-0">
                   <div className="w-full h-full rounded-[200px] overflow-hidden shadow-sm border border-gray-100 group">
                     <img src="https://res.cloudinary.com/dicvgtusz/image/upload/q_auto,f_webp/v1772084173/jalitha-hewage-Dw2QYtzSNn0-unsplash_dhz5dj.jpg" alt="Traveler" loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                   </div>
@@ -349,7 +349,7 @@ experiences, and personalized service.”
             </div>
 
             {/* Column 3: Right Top Image & Bottom Content */}
-            <div className="w-full lg:w-1/3 flex flex-col justify-start gap-4">
+            <div className="w-full lg:w-1/3 h-full flex flex-col gap-6">
               {/* Image */}
               <Reveal direction="right">
                 <div className="w-full aspect-[4/3] rounded-tl-[100px] rounded-br-[100px] rounded-tr-2xl rounded-bl-2xl overflow-hidden shadow-sm border border-gray-100 group">
@@ -359,14 +359,14 @@ experiences, and personalized service.”
 
               {/* Text area */}
               <Reveal direction="up" delay={200}>
-                <div>
+                <div className="rounded-3xl border border-gray-100 bg-white/90 p-5 lg:p-6 shadow-sm lg:mt-9">
                   <h2 className="text-4xl lg:text-[44px] font-bold text-gray-900 mb-6 leading-tight tracking-tight">
                     Gateway <span className="font-light italic text-gray-600">to</span><br />Unforgettable<br />Journeys.
                   </h2>
                   <p className="text-gray-500 leading-relaxed text-sm">
                     Ceyloria Travels is your trusted partner for discovering the beauty, culture, and adventure of Sri Lanka. From
-golden beaches to misty mountains and ancient heritage sites, we design journeys that turn your travel
-dreams into unforgettable memories.
+             golden beaches to misty mountains and ancient heritage sites, we design journeys that turn your travel
+             dreams into unforgettable memories.
 
                   </p>
                 </div>
