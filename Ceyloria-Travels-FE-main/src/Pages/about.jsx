@@ -70,7 +70,7 @@ const About = () => {
           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent z-10" />
         </div>
 
-        <div className="relative z-20 container mx-auto px-6 text-center">
+        <div className="relative z-20 container mx-auto px-6 text-center pt-14 md:pt-20">
           <Reveal direction="up">
             <span className="text-cyan-400 font-bold tracking-[0.4em] uppercase text-xs block mb-6 animate-fade-in-up">The Ceyloria Story</span>
             <h1 className={`${fontHead} text-5xl md:text-7xl lg:text-8xl text-white leading-tight mb-8 drop-shadow-2xl`}>
